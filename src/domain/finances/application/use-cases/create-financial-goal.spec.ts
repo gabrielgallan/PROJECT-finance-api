@@ -1,23 +1,21 @@
-import { IAccountsRepository } from '../repositories/accounts-repository'
-import { InMemoryAccountsRepository } from 'test/unit/repositories/in-memory-accounts-repository'
+import { InMemoryWalletsRepository } from 'test/unit/repositories/in-memory-wallets-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { makeAccount } from 'test/unit/factories/make-account'
-import { IFinancialGoalsRepository } from '../repositories/financial-goals-repository'
+import { makeWallet } from 'test/unit/factories/make-wallet'
 import { CreateFinancialGoalUseCase } from './create-financial-goal'
 import { InMemoryFinancialGoalsRepository } from 'test/unit/repositories/in-memory-financial-goals-repository'
 
-let accountRepository: IAccountsRepository
-let financialGoalsRepository: IFinancialGoalsRepository
+let walletRepository: InMemoryWalletsRepository
+let financialGoalsRepository: InMemoryFinancialGoalsRepository
 
 let sut: CreateFinancialGoalUseCase
 
 describe.skip('Create financial goal use case', () => {
     beforeEach(() => {
-        accountRepository = new InMemoryAccountsRepository()
+        walletRepository = new InMemoryWalletsRepository()
         financialGoalsRepository = new InMemoryFinancialGoalsRepository()
 
         sut = new CreateFinancialGoalUseCase(
-            accountRepository,
+            walletRepository,
             financialGoalsRepository
         )
 
@@ -28,13 +26,13 @@ describe.skip('Create financial goal use case', () => {
         vi.useRealTimers()
     })
 
-    it('should be able to create a account financial goal', async () => {
+    it('should be able to create a wallet financial goal', async () => {
         vi.setSystemTime(new Date(2026, 1, 9))
 
-        await accountRepository.create(
-            makeAccount({
+        await walletRepository.create(
+            makeWallet({
                 holderId: new UniqueEntityID('member-1')
-            }, new UniqueEntityID('account-1'))
+            }, new UniqueEntityID('wallet-1'))
         )
 
         const result = await sut.execute({
@@ -48,7 +46,7 @@ describe.skip('Create financial goal use case', () => {
         expect(result.isRight()).toBe(true)
 
         if (result.isRight()) {
-            expect(result.value.financialGoal.accountId.toString()).toBe('account-1')
+            expect(result.value.financialGoal.walletId.toString()).toBe('wallet-1')
             expect(result.value.financialGoal.targetAmount).toBe(130000)
             expect(result.value.financialGoal.targetDate).toEqual(new Date(2027, 0, 31))
         }

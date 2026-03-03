@@ -4,14 +4,14 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Encrypter } from '@/domain/identity/application/cryptography/encrypter'
-import { Account } from '@prisma/client'
+import { Wallet } from '@prisma/client'
 
-describe('Get rolling year account summaries tests', () => {
+describe('Get rolling year wallet summaries tests', () => {
     let app: INestApplication
     let prisma: PrismaService
     let encrypter: Encrypter
 
-    let account: Account
+    let wallet: Wallet
     let token: string
 
     beforeAll(async () => {
@@ -25,7 +25,7 @@ describe('Get rolling year account summaries tests', () => {
 
         encrypter = moduleRef.get(Encrypter)
 
-        account = await prisma.account.create({
+        wallet = await prisma.wallet.create({
             data: {
                 holder: {
                     create: {
@@ -63,7 +63,7 @@ describe('Get rolling year account summaries tests', () => {
             }
         })
 
-        token = await encrypter.encrypt({ sub: account.holderId })
+        token = await encrypter.encrypt({ sub: wallet.holderId })
 
         await app.init()
     })
@@ -76,11 +76,11 @@ describe('Get rolling year account summaries tests', () => {
         vi.useRealTimers()
     })
 
-    it('[GET] /api/account/year/progress', async () => {
+    it('[GET] /api/wallet/year/progress', async () => {
         vi.setSystemTime(new Date(2025, 0, 30))
 
         const response = await request(app.getHttpServer())
-            .get('/api/account/year/progress')
+            .get('/api/wallet/year/progress')
             .set('Authorization', `Bearer ${token}`)
             .expect(200)
 

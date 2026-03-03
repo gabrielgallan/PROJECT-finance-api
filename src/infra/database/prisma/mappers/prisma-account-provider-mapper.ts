@@ -1,23 +1,23 @@
-import { ExternalAccountProvider } from "@prisma/client"
+import { AccountProvider } from "@prisma/client"
 
 export class PrismaAccountProviderMapper {
-  static toPrisma(provider: string): ExternalAccountProvider {
-    const map: Record<string, ExternalAccountProvider> = {
-      github: ExternalAccountProvider.GITHUB,
+  static toPrisma(provider: string): AccountProvider {
+    const map: Record<string, AccountProvider> = {
+      github: AccountProvider.GITHUB,
     }
 
     const prismaProvider = map[provider.toLowerCase()]
 
     if (!prismaProvider) {
-      throw new Error(`Invalid external account provider: ${provider}`)
+      throw new Error(`Invalid  account provider: ${provider}`)
     }
 
     return prismaProvider
   }
 
-  static toDomain(provider: ExternalAccountProvider): string {
-    const map: Record<ExternalAccountProvider, string> = {
-      [ExternalAccountProvider.GITHUB]: 'github',
+  static toDomain(provider: AccountProvider): string {
+    const map: Record<AccountProvider, string> = {
+      [AccountProvider.GITHUB]: 'github',
     }
 
     const domainProvider = map[provider]

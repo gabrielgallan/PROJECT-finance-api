@@ -10,12 +10,11 @@ export const envSchema = z.object({
     GITHUB_OAUTH_CLIENT_ID: z.string(),
     GITHUB_OAUTH_CLIENT_SECRET: z.string(),
     GITHUB_OAUTH_CLIENT_REDIRECT_URI: z.string().url(),
-    GMAIL_USER: z.string().email(),
-    GMAIL_PASSWORD: z.string(),
     RESEND_API_KEY: z.string(),
     CLOUDINARY_CLOUD_NAME: z.string(),
     CLOUDINARY_API_KEY: z.string(),
-    CLOUDINARY_API_SECRET: z.string()
+    CLOUDINARY_API_SECRET: z.string(),
+    FRONTEND_BASE_URL: z.url()
 })
 
 export type Env = z.infer<typeof envSchema>

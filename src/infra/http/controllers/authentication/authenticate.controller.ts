@@ -9,7 +9,7 @@ import { createZodDto } from 'nestjs-zod'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
-  password: z.string()
+  password: z.string().nonempty()
 })
 
 class AuthenticateBodyDTO extends createZodDto(authenticateBodySchema) { }

@@ -1,65 +1,46 @@
-import { IAccountsRepository } from "@/domain/finances/application/repositories/accounts-repository";
-import { Account } from "@/domain/finances/enterprise/entities/account";
-import { Injectable } from "@nestjs/common";
+import { AccountRepository } from "@/domain/identity/application/repositories/account-repository";
 import { PrismaService } from "../prisma.service";
+import { Account } from "@/domain/identity/enterprise/entities/account";
+import { AccountProvider } from "@prisma/client";
 import { PrismaAccountMapper } from "../mappers/prisma-account-mapper";
+import { Injectable } from "@nestjs/common";
 
-/* eslint-disable */
 @Injectable()
-export class PrismaAccountsRepository implements IAccountsRepository {
+export class PrismaAccountsRepository implements AccountRepository {
     constructor(private prisma: PrismaService) { }
 
-    async create(account: Account): Promise<void> {
-        const prismaAccount = await this.prisma.account.create({
-            data: PrismaAccountMapper.toPrisma(account)
-        })
-
-        return
-    }
-
-    async findById(id: string) {
-        const prismaAccount = await this.prisma.account.findUnique({
-            where: { id }
-        })
-
-        if (!prismaAccount) {
-            return null
-        }
-
-        return PrismaAccountMapper.toDomain(prismaAccount)
-    }
-
-    async findByHolderId(holderId: string) {
-        const prismaAccount = await this.prisma.account.findUnique({
-            where: { holderId }
-        })
-
-        if (!prismaAccount) {
-            return null
-        }
-
-        return PrismaAccountMapper.toDomain(prismaAccount)
-    }
-
-    async save(account: Account) {
+    async create(account: Account) {
         const data = PrismaAccountMapper.toPrisma(account)
 
-        const updated = await this.prisma.account.update({
-            where: { id: account.id.toString() },
+        await this.prisma.account.create({
             data
         })
-
-        return PrismaAccountMapper.toDomain(updated)
     }
 
-    async delete(account: Account) {
-        const rows = await this.prisma.account.delete({
+    async findByProviderAndUserId(provider: string, userId: string) {
+        let prismaProvider: AccountProvider
+
+        switch (provider) {
+            case 'GITHUB':
+                prismaProvider = AccountProvider.GITHUB
+                break
+            default:
+                throw new Error(`Invalid provider: ${provider}`)
+        }
+
+        const account = await this.prisma.account.findUnique({
             where: {
-                id: account.id.toString()
+                provider_userId: {
+                    provider: prismaProvider,
+                    userId
+                }
             }
         })
 
-        return 1
-    }
+        if (!account) {
+            return null
+        }
 
+        return PrismaAccountMapper.toDomain(account)
+    }
 }

@@ -1,4 +1,4 @@
-import { ITransactionsRepository, PaginatedTransactionsQuery, TransactionsQuery } from "@/domain/finances/application/repositories/transactions-repository";
+import { TransactionsRepository, PaginatedTransactionsQuery, TransactionsQuery } from "@/domain/finances/application/repositories/transactions-repository";
 import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
@@ -6,7 +6,7 @@ import { PrismaTransactionMapper } from "../mappers/prisma-transactions-mapper";
 
 
 @Injectable()
-export class PrismaTransactionsRepository implements ITransactionsRepository {
+export class PrismaTransactionsRepository implements TransactionsRepository {
     constructor(private prisma: PrismaService) { }
 
     async create(transaction: Transaction) {
@@ -31,15 +31,15 @@ export class PrismaTransactionsRepository implements ITransactionsRepository {
         return PrismaTransactionMapper.toDomain(transaction)
     }
 
-    async listPaginated({ 
-        accountId, 
-        categoryId, 
-        interval, 
-        pagination 
+    async listPaginated({
+        walletId,
+        categoryId,
+        interval,
+        pagination
     }: PaginatedTransactionsQuery) {
         const transactions = await this.prisma.transaction.findMany({
             where: {
-                accountId,
+                walletId,
                 categoryId,
                 createdAt: {
                     gte: interval.startDate,
@@ -53,18 +53,18 @@ export class PrismaTransactionsRepository implements ITransactionsRepository {
             take: pagination.limit
         })
 
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line
         return transactions.map(PrismaTransactionMapper.toDomain)
     }
 
     async findManyByQuery({
-        accountId,
+        walletId,
         categoryId,
         interval
     }: TransactionsQuery) {
         const transactions = await this.prisma.transaction.findMany({
             where: {
-                accountId,
+                walletId,
                 categoryId,
                 createdAt: {
                     gte: interval.startDate,
@@ -73,7 +73,7 @@ export class PrismaTransactionsRepository implements ITransactionsRepository {
             }
         })
 
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line
         return transactions.map(PrismaTransactionMapper.toDomain)
     }
 
@@ -86,13 +86,14 @@ export class PrismaTransactionsRepository implements ITransactionsRepository {
         return PrismaTransactionMapper.toDomain(updated)
     }
 
-    async deleteAllByAccountId(accountId: string) {
+    async deleteAllByWalletId(walletId: string) {
         const result = await this.prisma.transaction.deleteMany({
             where: {
-                accountId
+                walletId
             }
         })
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return result.count
     }
 }

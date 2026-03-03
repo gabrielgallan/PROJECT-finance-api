@@ -8,7 +8,7 @@ export enum TransactionOperation {
 }
 
 export interface TransactionProps {
-  accountId: UniqueEntityID
+  walletId: UniqueEntityID
   categoryId?: UniqueEntityID | null
   title: string
   amount: number
@@ -37,8 +37,8 @@ export class Transaction extends AggregateRoot<TransactionProps> {
   }
 
   // => Getters
-  get accountId() {
-    return this.props.accountId
+  get walletId() {
+    return this.props.walletId
   }
 
   get categoryId() {
@@ -95,7 +95,7 @@ export class Transaction extends AggregateRoot<TransactionProps> {
   set method(method: string | undefined | null) {
     this.props.method = method
 
-    this.touch() 
+    this.touch()
   }
 
   // => Methods

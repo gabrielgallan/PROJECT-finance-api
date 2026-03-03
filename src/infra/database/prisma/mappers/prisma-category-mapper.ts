@@ -7,7 +7,7 @@ export class PrismaCategoryMapper {
     static toDomain(raw: PrismaCategory): Category {
         return Category.create(
             {
-                accountId: new UniqueEntityID(raw.accountId),
+                walletId: new UniqueEntityID(raw.walletId),
                 name: raw.name,
                 slug: new Slug(raw.slug),
                 description: raw.description,
@@ -21,7 +21,7 @@ export class PrismaCategoryMapper {
     static toPrisma(category: Category): Prisma.CategoryUncheckedCreateInput {
         return {
             id: category.id.toString(),
-            accountId: category.accountId.toString(),
+            walletId: category.walletId.toString(),
             name: category.name,
             slug: category.slug.value,
             description: category.description,

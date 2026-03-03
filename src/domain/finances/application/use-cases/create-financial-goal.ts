@@ -1,9 +1,8 @@
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Either, left, right } from '@/core/types/either'
-import { IAccountsRepository } from '../repositories/accounts-repository'
-import { MemberAccountNotFoundError } from './errors/member-account-not-found-error'
+import { WalletsRepository } from '../repositories/wallets-repository'
 import { FinancialGoal } from '../../enterprise/entities/financial-goal'
-import { IFinancialGoalsRepository } from '../repositories/financial-goals-repository'
+import { FinancialGoalsRepository } from '../repositories/financial-goals-repository'
 import dayjs from 'dayjs'
 import { InvalidPeriodError } from './errors/invalid-period-error'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
@@ -18,7 +17,6 @@ interface CreateFinancialGoalUseCaseRequest {
 
 type CreateFinancialGoalUseCaseResponse = Either<
   | ResourceNotFoundError
-  | MemberAccountNotFoundError
   | InvalidPeriodError
   | InvalidPositiveNumberError,
   {
@@ -28,8 +26,8 @@ type CreateFinancialGoalUseCaseResponse = Either<
 
 export class CreateFinancialGoalUseCase {
   constructor(
-    private accountsRepository: IAccountsRepository,
-    private financialGoalsRepository: IFinancialGoalsRepository
+    private walletsRepository: WalletsRepository,
+    private financialGoalsRepository: FinancialGoalsRepository
   ) { }
 
   async execute({
@@ -49,14 +47,14 @@ export class CreateFinancialGoalUseCase {
       return left(new InvalidPositiveNumberError())
     }
 
-    const account = await this.accountsRepository.findByHolderId(memberId)
+    const wallet = await this.walletsRepository.findByHolderId(memberId)
 
-    if (!account) {
-      return left(new MemberAccountNotFoundError())
+    if (!wallet) {
+      return left(new ResourceNotFoundError())
     }
 
     const financialGoal = FinancialGoal.create({
-      accountId: account.id,
+      walletId: wallet.id,
       title,
       description,
       targetAmount,

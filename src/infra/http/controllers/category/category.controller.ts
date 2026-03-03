@@ -2,18 +2,17 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { CreateAccountCategoryUseCase } from '@/domain/finances/application/use-cases/create-account-category';
+import { CreateWalletCategoryUseCase } from '@/domain/finances/application/use-cases/create-wallet-category';
 import { Body, ConflictException, Controller, Get, HttpCode, InternalServerErrorException, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
-import { MemberAccountNotFoundError } from '@/domain/finances/application/use-cases/errors/member-account-not-found-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { CategoryAlreadyExistsError } from '@/domain/finances/application/use-cases/errors/category-already-exists-error';
-import { ListAccountCategoriesUseCase } from '@/domain/finances/application/use-cases/list-account-categories';
+import { ListWalletCategoriesUseCase } from '@/domain/finances/application/use-cases/list-wallet-categories';
 import { CategoryPresenter } from '../../presenters/category-presenter';
-import { EditAccountCategoryUseCase } from '@/domain/finances/application/use-cases/edit-account-category';
+import { EditWalletCategoryUseCase } from '@/domain/finances/application/use-cases/edit-wallet-category';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
 
@@ -35,19 +34,19 @@ class CreateCategoryBodyDTO extends createZodDto(createCategoryBodySchema) { }
 
 class EditCategoryBodyDTO extends createZodDto(editCategoryBodySchema) { }
 
-class EditCategoryParamsDTO extends createZodDto(editCategoryParamsSchema) { }  
+class EditCategoryParamsDTO extends createZodDto(editCategoryParamsSchema) { }
 
 @Controller('/api/categories')
 @ApiTags('Categories')
 export class CategoryController {
     constructor(
-        private createCategory: CreateAccountCategoryUseCase,
-        private listCategories: ListAccountCategoriesUseCase,
-        private editCategory: EditAccountCategoryUseCase,
+        private createCategory: CreateWalletCategoryUseCase,
+        private listCategories: ListWalletCategoriesUseCase,
+        private editCategory: EditWalletCategoryUseCase,
     ) { }
 
     @Post()
-    @ApiOperation({ summary: 'create a new account category' })
+    @ApiOperation({ summary: 'create a new wallet category' })
     async create(
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(createCategoryBodySchema)) body: CreateCategoryBodyDTO
@@ -68,8 +67,7 @@ export class CategoryController {
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
 
-                case MemberAccountNotFoundError:
-                    throw new NotFoundException(error.message)
+
 
                 case CategoryAlreadyExistsError:
                     throw new ConflictException(error.message)
@@ -83,7 +81,7 @@ export class CategoryController {
     }
 
     @Get()
-    @ApiOperation({ summary: 'list all account categories' })
+    @ApiOperation({ summary: 'list all wallet categories' })
     async list(
         @CurrentUser() user: UserPayload,
     ) {
@@ -92,15 +90,7 @@ export class CategoryController {
         })
 
         if (result.isLeft()) {
-            const error = result.value
-
-            switch (error.constructor) {
-                case MemberAccountNotFoundError:
-                    throw new NotFoundException(error.message)
-
-                default:
-                    throw new InternalServerErrorException()
-            }
+            throw new InternalServerErrorException()
         }
 
         return {
@@ -111,7 +101,7 @@ export class CategoryController {
 
     @Put('/:slug')
     @HttpCode(204)
-    @ApiOperation({ summary: 'edit an account category' })
+    @ApiOperation({ summary: 'edit an wallet category' })
     async edit(
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(editCategoryBodySchema)) body: EditCategoryBodyDTO,
@@ -132,9 +122,6 @@ export class CategoryController {
 
             switch (error.constructor) {
                 case ResourceNotFoundError:
-                    throw new NotFoundException(error.message)
-
-                case MemberAccountNotFoundError:
                     throw new NotFoundException(error.message)
 
                 case CategoryAlreadyExistsError:

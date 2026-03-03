@@ -4,7 +4,7 @@ import { Optional } from '@/core/types/optional'
 import { FinancialGoalCreatedEvent } from '../events/financial-goal-created-event'
 
 export interface FinancialGoalProps {
-  accountId: UniqueEntityID
+  walletId: UniqueEntityID
   title: string
   description?: string | null
   targetAmount: number
@@ -39,8 +39,8 @@ export class FinancialGoal extends AggregateRoot<FinancialGoalProps> {
   }
 
   // => Getters
-  get accountId() {
-    return this.props.accountId
+  get walletId() {
+    return this.props.walletId
   }
 
   get title() {

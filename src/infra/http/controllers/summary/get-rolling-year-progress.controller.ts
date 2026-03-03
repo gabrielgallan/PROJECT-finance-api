@@ -1,10 +1,10 @@
 import { Controller, Get, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
-import { MemberAccountNotFoundError } from '@/domain/finances/application/use-cases/errors/member-account-not-found-error';
 import { GetRollingYearProgressUseCase } from '@/domain/finances/application/use-cases/get-rolling-yearly-progress';
-import { AccountYearSummaryPresenter } from '../../presenters/account-year-summary-presenter';
+import { YearProgressPresenter } from '../../presenters/year-progress-presenter';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 @Controller('/api')
 @ApiTags('Summaries')
@@ -13,7 +13,7 @@ export class GetRollingYearProgressController {
         private getRollingYearProgress: GetRollingYearProgressUseCase
     ) { }
 
-    @Get('/account/year/progress')
+    @Get('/wallet/year/progress')
     @ApiOperation({ summary: 'get rolling year progress' })
     async handle(
         @CurrentUser() user: UserPayload,
@@ -26,7 +26,7 @@ export class GetRollingYearProgressController {
             const error = result.value
 
             switch (error.constructor) {
-                case MemberAccountNotFoundError:
+                case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
 
                 default:
@@ -35,7 +35,7 @@ export class GetRollingYearProgressController {
         }
 
         return {
-            progress: AccountYearSummaryPresenter.toHTTP(result.value.yearAccountSummary),
+            progress: YearProgressPresenter.toHTTP(result.value.yearWalletSummary)
         }
     }
 }

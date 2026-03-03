@@ -5,17 +5,17 @@ https://docs.nestjs.com/modules
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaMembersRepository } from './prisma/repositories/prisma-members-repository';
-import { PrismaAccountsRepository } from './prisma/repositories/prisma-accounts-repository';
+import { PrismaWalletsRepository } from './prisma/repositories/prisma-wallets-repository';
 import { PrismaCategoriesRepository } from './prisma/repositories/prisma-categories-repository';
 import { PrismaTransactionsRepository } from './prisma/repositories/prisma-transactions-repository';
-import { IMembersRepository } from '@/domain/finances/application/repositories/members-repository';
-import { IAccountsRepository } from '@/domain/finances/application/repositories/accounts-repository';
-import { ICategoriesRepository } from '@/domain/finances/application/repositories/categories-repository';
-import { ITransactionsRepository } from '@/domain/finances/application/repositories/transactions-repository';
+import { MembersRepository } from '@/domain/finances/application/repositories/members-repository';
+import { WalletsRepository } from '@/domain/finances/application/repositories/wallets-repository';
+import { CategoriesRepository } from '@/domain/finances/application/repositories/categories-repository';
+import { TransactionsRepository } from '@/domain/finances/application/repositories/transactions-repository';
 import { UsersRepository } from '@/domain/identity/application/repositories/users-repository';
 import { PrismaUsersRepository } from './prisma/repositories/prisma-users-repository';
-import { PrismaExternalAccountsRepository } from './prisma/repositories/prisma-external-accounts-repository';
-import { ExternalAccountRepository } from '@/domain/identity/application/repositories/external-account-repository';
+import { PrismaAccountsRepository } from './prisma/repositories/prisma-accounts-repository';
+import { AccountRepository } from '@/domain/identity/application/repositories/account-repository';
 import { TokensRepository } from '@/domain/identity/application/repositories/tokens-repository';
 import { PrismaTokensRepository } from './prisma/repositories/prisma-tokens-repository';
 
@@ -23,19 +23,19 @@ import { PrismaTokensRepository } from './prisma/repositories/prisma-tokens-repo
     providers: [
         PrismaService,
         {
-            provide: IMembersRepository,
+            provide: MembersRepository,
             useClass: PrismaMembersRepository
         },
         {
-            provide: IAccountsRepository,
-            useClass: PrismaAccountsRepository
+            provide: WalletsRepository,
+            useClass: PrismaWalletsRepository
         },
         {
-            provide: ICategoriesRepository,
+            provide: CategoriesRepository,
             useClass: PrismaCategoriesRepository
         },
         {
-            provide: ITransactionsRepository,
+            provide: TransactionsRepository,
             useClass: PrismaTransactionsRepository
         },
         {
@@ -43,8 +43,8 @@ import { PrismaTokensRepository } from './prisma/repositories/prisma-tokens-repo
             useClass: PrismaUsersRepository
         },
         {
-            provide: ExternalAccountRepository,
-            useClass: PrismaExternalAccountsRepository
+            provide: AccountRepository,
+            useClass: PrismaAccountsRepository
         },
         {
             provide: TokensRepository,
@@ -53,12 +53,12 @@ import { PrismaTokensRepository } from './prisma/repositories/prisma-tokens-repo
     ],
     exports: [
         PrismaService,
-        IMembersRepository,
-        IAccountsRepository,
-        ICategoriesRepository,
-        ITransactionsRepository,
+        MembersRepository,
+        WalletsRepository,
+        CategoriesRepository,
+        TransactionsRepository,
         UsersRepository,
-        ExternalAccountRepository,
+        AccountRepository,
         TokensRepository
     ],
 })

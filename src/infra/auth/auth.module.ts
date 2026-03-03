@@ -11,7 +11,7 @@ import { EnvService } from '../env/env.service';
 import { EnvModule } from '../env/env.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth-guard';
-import { ExternalAuthProvider } from '@/domain/identity/application/auth/auth-provider';
+import { AuthProvider } from '@/domain/identity/application/auth/auth-provider';
 
 @Module({
   imports: [
@@ -33,15 +33,15 @@ import { ExternalAuthProvider } from '@/domain/identity/application/auth/auth-pr
     })
   ],
   exports: [
-    JwtModule, 
-    Encrypter, 
-    Hasher, 
-    ExternalAuthProvider
+    JwtModule,
+    Encrypter,
+    Hasher,
+    AuthProvider
   ],
   providers: [
     JwtStrategy,
     {
-      provide: ExternalAuthProvider,
+      provide: AuthProvider,
       useClass: GithubOAuthProvider
     },
     {

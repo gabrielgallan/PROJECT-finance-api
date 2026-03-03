@@ -1,11 +1,10 @@
-import { IAccountsRepository } from '../repositories/accounts-repository'
-import { ITransactionsRepository } from '../repositories/transactions-repository'
+import { WalletsRepository } from '../repositories/wallets-repository'
+import { TransactionsRepository } from '../repositories/transactions-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Either, left, right } from '@/core/types/either'
 import { Transaction } from '@/domain/finances/enterprise/entities/transaction'
-import { MemberAccountNotFoundError } from './errors/member-account-not-found-error'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { ICategoriesRepository } from '../repositories/categories-repository'
+import { CategoriesRepository } from '../repositories/categories-repository'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { Injectable } from '@nestjs/common'
 
@@ -20,7 +19,6 @@ interface EditTransactionUseCaseRequest {
 
 type EditTransactionUseCaseResponse = Either<
   | ResourceNotFoundError
-  | MemberAccountNotFoundError
   | NotAllowedError,
   { transaction: Transaction }
 >
@@ -28,10 +26,10 @@ type EditTransactionUseCaseResponse = Either<
 @Injectable()
 export class EditTransactionUseCase {
   constructor(
-    private accountsRepository: IAccountsRepository,
-    private transactionsRepository: ITransactionsRepository,
-    private categoriesRepository: ICategoriesRepository,
-  ) {}
+    private walletsRepository: WalletsRepository,
+    private transactionsRepository: TransactionsRepository,
+    private categoriesRepository: CategoriesRepository,
+  ) { }
 
   async execute({
     memberId,
@@ -41,10 +39,10 @@ export class EditTransactionUseCase {
     description,
     method,
   }: EditTransactionUseCaseRequest): Promise<EditTransactionUseCaseResponse> {
-    const account = await this.accountsRepository.findByHolderId(memberId)
+    const wallet = await this.walletsRepository.findByHolderId(memberId)
 
-    if (!account) {
-      return left(new MemberAccountNotFoundError())
+    if (!wallet) {
+      return left(new ResourceNotFoundError())
     }
 
     const transaction =
@@ -54,14 +52,14 @@ export class EditTransactionUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    if (transaction.accountId.toString() !== account.id.toString()) {
+    if (transaction.walletId.toString() !== wallet.id.toString()) {
       return left(new NotAllowedError())
     }
 
     if (categoryId) {
-      const category = await this.categoriesRepository.findByIdAndAccountId(
+      const category = await this.categoriesRepository.findByIdAndWalletId(
         categoryId,
-        account.id.toString()
+        wallet.id.toString()
       )
 
       if (!category) {

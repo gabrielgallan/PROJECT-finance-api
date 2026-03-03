@@ -2,16 +2,16 @@ import { BadGatewayException, BadRequestException, Injectable } from "@nestjs/co
 import { z } from "zod";
 import { EnvService } from "../env/env.service";
 import ky, { HTTPError } from "ky";
-import { ExternalAuthProvider, ExternalUserProps } from "@/domain/identity/application/auth/auth-provider";
+import { AuthProvider, UserProps } from "@/domain/identity/application/auth/auth-provider";
 
 interface GithubOAuthProviderInput {
     code: string
 }
 
-type GithubUser = ExternalUserProps
+type GithubUser = UserProps
 
 @Injectable()
-export class GithubOAuthProvider implements ExternalAuthProvider<
+export class GithubOAuthProvider implements AuthProvider<
     GithubUser,
     GithubOAuthProviderInput
 > {

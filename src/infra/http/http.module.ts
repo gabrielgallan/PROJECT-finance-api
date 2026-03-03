@@ -11,30 +11,30 @@ import { DatabaseModule } from '../database/database.module'
 import { RegisterController } from './controllers/authentication/register.controller'
 import { AuthenticateController } from './controllers/authentication/authenticate.controller'
 import { GetProfileController } from './controllers/profile/get-profile.controller'
-import { OpenAccountController } from './controllers/account/open-account.controller'
+import { OpenWalletController } from './controllers/wallet/open-new-wallet.controller'
 import { CategoryController } from './controllers/category/category.controller'
-import { CloseAccountController } from './controllers/account/close-account.controller'
 import { GetRollingYearProgressController } from './controllers/summary/get-rolling-year-progress.controller'
 import { AuthenticateWithGithubController } from './controllers/authentication/authenticate-with-github.controller'
 import { RequestPasswordRecoverController } from './controllers/authentication/request-password-recover.controller'
 import { GetSummariesByCategoriesController } from './controllers/summary/get-summaries-by-categories.controller'
 import { ResetPasswordController } from './controllers/authentication/reset-password.controller'
 import { CreateTransactionController } from './controllers/transactions/create-transaction.controller'
-import { ListAccountTransactionsController } from './controllers/transactions/list-transactions.controller'
-import { EditAccountTransactionController } from './controllers/transactions/edit-transaction.controller'
-import { GetAccountSummaryController } from './controllers/summary/get-account-summary.controller'
+import { ListWalletTransactionsController } from './controllers/transactions/list-transactions.controller'
+import { UploadAvatarController } from './controllers/profile/upload-avatar.controller'
+import { EditWalletTransactionController } from './controllers/transactions/edit-transaction.controller'
+import { GetWalletSummaryController } from './controllers/summary/get-summary.controller'
+import { GetWalletInfoController } from './controllers/wallet/get-info.controller'
 
 // use-cases
-import { OpenAccountUseCase } from '@/domain/finances/application/use-cases/open-account'
-import { CreateAccountCategoryUseCase } from '@/domain/finances/application/use-cases/create-account-category'
-import { ListAccountCategoriesUseCase } from '@/domain/finances/application/use-cases/list-account-categories'
-import { EditAccountCategoryUseCase } from '@/domain/finances/application/use-cases/edit-account-category'
-import { CloseAccountUseCase } from '@/domain/finances/application/use-cases/close-account'
+import { OpenWalletUseCase } from '@/domain/finances/application/use-cases/open-new-wallet'
+import { CreateWalletCategoryUseCase } from '@/domain/finances/application/use-cases/create-wallet-category'
+import { ListWalletCategoriesUseCase } from '@/domain/finances/application/use-cases/list-wallet-categories'
+import { EditWalletCategoryUseCase } from '@/domain/finances/application/use-cases/edit-wallet-category'
 import { CreateTransactionUseCase } from '@/domain/finances/application/use-cases/create-transaction'
-import { ListAccountTransactionsUseCase } from '@/domain/finances/application/use-cases/list-account-transactions'
+import { ListWalletTransactionsUseCase } from '@/domain/finances/application/use-cases/list-wallet-transactions'
 import { EditTransactionUseCase } from '@/domain/finances/application/use-cases/edit-transaction'
-import { GetAccountSummaryUseCase } from '@/domain/finances/application/use-cases/get-account-summary'
-import { GetAccountSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-account-summaries-by-categories'
+import { GetWalletSummaryUseCase } from '@/domain/finances/application/use-cases/get-wallet-summary'
+import { GetWalletSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-wallet-summaries-by-categories'
 import { FinancialAnalyticsService } from '@/domain/finances/application/services/financial-analytics/financial-analytics-service'
 import { GetRollingYearProgressUseCase } from '@/domain/finances/application/use-cases/get-rolling-yearly-progress'
 import { EnvModule } from '../env/env.module'
@@ -44,12 +44,10 @@ import { AuthenticateUseCase } from '@/domain/identity/application/use-cases/aut
 import { GetProfileUseCase } from '@/domain/identity/application/use-cases/get-profile'
 import { ResetPasswordUseCase } from '@/domain/identity/application/use-cases/reset-password'
 import { RequestPasswordRecoverUseCase } from '@/domain/identity/application/use-cases/request-password-recover'
-import { AuthenticateWithExternalProviderUseCase } from '@/domain/identity/application/use-cases/authenticate-with-external-provider'
-import { UploadAvatarController } from './controllers/profile/upload-avatar.controller'
+import { AuthenticateWithProviderUseCase } from '@/domain/identity/application/use-cases/authenticate-with-provider'
 import { StorageModule } from '../storage/storage.module'
 import { UploadAvatarUseCase } from '@/domain/identity/application/use-cases/upload-avatar'
-import { GetAccountInfoController } from './controllers/account/get-info.controller'
-import { GetAccountInfoUseCase } from '@/domain/finances/application/use-cases/get-account-info'
+import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/get-wallet-info'
 
 @Module({
     imports: [
@@ -67,38 +65,36 @@ import { GetAccountInfoUseCase } from '@/domain/finances/application/use-cases/g
         UploadAvatarController,
         RequestPasswordRecoverController,
         ResetPasswordController,
-        OpenAccountController,
-        CloseAccountController,
+        OpenWalletController,
         CategoryController,
         CreateTransactionController,
-        ListAccountTransactionsController,
-        EditAccountTransactionController,
-        GetAccountSummaryController,
+        ListWalletTransactionsController,
+        EditWalletTransactionController,
+        GetWalletSummaryController,
         GetSummariesByCategoriesController,
         GetRollingYearProgressController,
-        GetAccountInfoController
+        GetWalletInfoController
     ],
     providers: [
         RegisterUseCase,
         AuthenticateUseCase,
-        AuthenticateWithExternalProviderUseCase,
+        AuthenticateWithProviderUseCase,
         GetProfileUseCase,
         UploadAvatarUseCase,
         ResetPasswordUseCase,
         RequestPasswordRecoverUseCase,
-        OpenAccountUseCase,
-        CloseAccountUseCase,
-        CreateAccountCategoryUseCase,
-        ListAccountCategoriesUseCase,
-        EditAccountCategoryUseCase,
+        OpenWalletUseCase,
+        CreateWalletCategoryUseCase,
+        ListWalletCategoriesUseCase,
+        EditWalletCategoryUseCase,
         CreateTransactionUseCase,
-        ListAccountTransactionsUseCase,
+        ListWalletTransactionsUseCase,
         EditTransactionUseCase,
-        GetAccountSummaryUseCase,
-        GetAccountSummariesByCategoriesUseCase,
+        GetWalletSummaryUseCase,
+        GetWalletSummariesByCategoriesUseCase,
         GetRollingYearProgressUseCase,
         FinancialAnalyticsService,
-        GetAccountInfoUseCase
+        GetWalletInfoUseCase
     ]
 })
 export class HttpModule { }

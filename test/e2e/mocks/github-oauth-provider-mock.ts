@@ -1,14 +1,14 @@
-import { ExternalAuthProvider, ExternalUserProps } from "@/domain/identity/application/auth/auth-provider";
+import { AuthProvider, UserProps } from "@/domain/identity/application/auth/auth-provider";
 import { Injectable } from "@nestjs/common";
 
 interface GithubOAuthProviderInputMock {
     OAuthCode: string
 }
 
-type GithubUserMock = ExternalUserProps
+type GithubUserMock = UserProps
 
 @Injectable()
-export class GithubOAuthProviderMock implements ExternalAuthProvider<
+export class GithubOAuthProviderMock implements AuthProvider<
     GithubUserMock,
     GithubOAuthProviderInputMock
 > {

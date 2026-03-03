@@ -1,7 +1,7 @@
-import { ICategoriesRepository } from "@/domain/finances/application/repositories/categories-repository";
+import { CategoriesRepository } from "@/domain/finances/application/repositories/categories-repository";
 import { Category } from "@/domain/finances/enterprise/entities/category";
 
-export class InMemoryCategoriesRepository implements ICategoriesRepository {
+export class InMemoryCategoriesRepository implements CategoriesRepository {
     public items: Category[] = []
 
     async create(category: Category) {
@@ -9,24 +9,24 @@ export class InMemoryCategoriesRepository implements ICategoriesRepository {
         return
     }
 
-    async findByIdAndAccountId(id: string, accountId: string) {
+    async findByIdAndWalletId(id: string, walletId: string) {
         const category = this.items.find((c) => {
-            return c.id.toString() === id && c.accountId.toString() === accountId
+            return c.id.toString() === id && c.walletId.toString() === walletId
         })
 
         return category ?? null
     }
 
-    async findByAccountIdAndSlug(accountId: string, slug: string) {
+    async findByWalletIdAndSlug(walletId: string, slug: string) {
         const category = this.items.find((c) => {
-            return (c.accountId.toString() === accountId && c.slug.value === slug)
+            return (c.walletId.toString() === walletId && c.slug.value === slug)
         })
 
         return category ?? null
     }
 
-    async findManyByAccountId(accountId: string) {
-        const categories = this.items.filter(c => c.accountId.toString() === accountId)
+    async findManyByWalletId(walletId: string) {
+        const categories = this.items.filter(c => c.walletId.toString() === walletId)
 
         return categories
     }
@@ -41,10 +41,10 @@ export class InMemoryCategoriesRepository implements ICategoriesRepository {
         return category
     }
 
-    async deleteAllByAccountId(accountId: string) {
+    async deleteAllByWalletId(walletId: string) {
         const originalLenght = this.items.length
 
-        const remaining = this.items.filter(a => a.accountId.toString() !== accountId)
+        const remaining = this.items.filter(a => a.walletId.toString() !== walletId)
 
         this.items = remaining
 

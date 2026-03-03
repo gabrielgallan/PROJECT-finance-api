@@ -4,7 +4,7 @@ import { Optional } from '@/core/types/optional'
 import { Slug } from './value-objects/slug'
 
 export interface CategoryProps {
-  accountId: UniqueEntityID
+  walletId: UniqueEntityID
   name: string
   slug: Slug
   description?: string | null
@@ -43,8 +43,8 @@ export class Category extends Entity<CategoryProps> {
     return this.props.slug
   }
 
-  get accountId() {
-    return this.props.accountId
+  get walletId() {
+    return this.props.walletId
   }
 
   get createdAt() {

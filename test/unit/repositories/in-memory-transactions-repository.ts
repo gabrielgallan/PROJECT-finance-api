@@ -1,7 +1,7 @@
-import { ITransactionsRepository, PaginatedTransactionsQuery, TransactionsQuery } from "@/domain/finances/application/repositories/transactions-repository";
+import { TransactionsRepository, PaginatedTransactionsQuery, TransactionsQuery } from "@/domain/finances/application/repositories/transactions-repository";
 import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
 
-export class InMemoryTransactionsRepository implements ITransactionsRepository {
+export class InMemoryTransactionsRepository implements TransactionsRepository {
     public items: Transaction[] = []
 
     async create(Transaction: Transaction) {
@@ -17,7 +17,7 @@ export class InMemoryTransactionsRepository implements ITransactionsRepository {
     }
 
     async listPaginated({
-        accountId,
+        walletId,
         categoryId,
         interval,
         pagination
@@ -26,12 +26,12 @@ export class InMemoryTransactionsRepository implements ITransactionsRepository {
         const { startDate, endDate } = interval
 
         const transactions = this.items.filter(t => {
-            return t.accountId.toString() === accountId &&
-            t.createdAt.getTime() >= startDate.getTime() &&
-            t.createdAt.getTime() <= endDate.getTime()
+            return t.walletId.toString() === walletId &&
+                t.createdAt.getTime() >= startDate.getTime() &&
+                t.createdAt.getTime() <= endDate.getTime()
         })
-        
-        const transactionsWithCategory = categoryId ? 
+
+        const transactionsWithCategory = categoryId ?
             transactions.filter(t => t.categoryId?.toString() === categoryId)
             : transactions
 
@@ -43,14 +43,14 @@ export class InMemoryTransactionsRepository implements ITransactionsRepository {
     }
 
     async findManyByQuery({
-        accountId,
+        walletId,
         categoryId,
         interval
     }: TransactionsQuery) {
         const { startDate, endDate } = interval
 
         const transactions = this.items.filter(t => {
-            return t.accountId.toString() === accountId &&
+            return t.walletId.toString() === walletId &&
                 t.createdAt.getTime() >= startDate.getTime() &&
                 t.createdAt.getTime() <= endDate.getTime()
         })
@@ -72,10 +72,10 @@ export class InMemoryTransactionsRepository implements ITransactionsRepository {
         return transaction
     }
 
-    async deleteAllByAccountId(accountId: string) {
+    async deleteAllByWalletId(walletId: string) {
         const originalLenght = this.items.length
 
-        const remaining = this.items.filter(a => a.accountId.toString() !== accountId)
+        const remaining = this.items.filter(a => a.walletId.toString() !== walletId)
 
         this.items = remaining
 

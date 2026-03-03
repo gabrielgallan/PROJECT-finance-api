@@ -1,7 +1,7 @@
 import { Member } from "@/domain/finances/enterprise/entities/member";
-import { IMembersRepository } from "@/domain/finances/application/repositories/members-repository";
+import { MembersRepository } from "@/domain/finances/application/repositories/members-repository";
 
-export class InMemoryMembersRepository implements IMembersRepository {
+export class InMemoryMembersRepository implements MembersRepository {
     public items: Member[] = []
 
     async findById(id: string) {

@@ -5,7 +5,6 @@ import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { MemberAccountNotFoundError } from '@/domain/finances/application/use-cases/errors/member-account-not-found-error';
 import { InvalidTransactionOperationError } from '@/domain/finances/application/use-cases/errors/invalid-transaction-operation-error';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
@@ -52,9 +51,6 @@ export class CreateTransactionController {
             switch (error.constructor) {
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
-
-                case MemberAccountNotFoundError:
-                    throw new NotFoundException(error.message   )
 
                 case InvalidTransactionOperationError:
                     throw new BadRequestException(error.message)

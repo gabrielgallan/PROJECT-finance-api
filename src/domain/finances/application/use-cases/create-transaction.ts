@@ -1,15 +1,14 @@
-import { IAccountsRepository } from '../repositories/accounts-repository'
-import { ITransactionsRepository } from '../repositories/transactions-repository'
+import { WalletsRepository } from '../repositories/wallets-repository'
+import { TransactionsRepository } from '../repositories/transactions-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Either, left, right } from '@/core/types/either'
 import {
   Transaction,
   TransactionOperation,
 } from '@/domain/finances/enterprise/entities/transaction'
-import { MemberAccountNotFoundError } from './errors/member-account-not-found-error'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InvalidTransactionOperationError } from './errors/invalid-transaction-operation-error'
-import { ICategoriesRepository } from '../repositories/categories-repository'
+import { CategoriesRepository } from '../repositories/categories-repository'
 import { Injectable } from '@nestjs/common'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
 
@@ -25,7 +24,6 @@ interface CreateTransactionUseCaseRequest {
 
 type CreateTransactionUseCaseResponse = Either<
   | ResourceNotFoundError
-  | MemberAccountNotFoundError
   | InvalidTransactionOperationError,
   { transaction: Transaction }
 >
@@ -33,9 +31,9 @@ type CreateTransactionUseCaseResponse = Either<
 @Injectable()
 export class CreateTransactionUseCase {
   constructor(
-    private accountsRepository: IAccountsRepository,
-    private transactionsRepository: ITransactionsRepository,
-    private categoriesRepository: ICategoriesRepository,
+    private walletsRepository: WalletsRepository,
+    private transactionsRepository: TransactionsRepository,
+    private categoriesRepository: CategoriesRepository,
   ) { }
 
   async execute({
@@ -53,16 +51,16 @@ export class CreateTransactionUseCase {
 
     const formattedAmount = Math.round(amount * 100) / 100
 
-    const account = await this.accountsRepository.findByHolderId(memberId)
+    const wallet = await this.walletsRepository.findByHolderId(memberId)
 
-    if (!account) {
-      return left(new MemberAccountNotFoundError())
+    if (!wallet) {
+      return left(new ResourceNotFoundError())
     }
 
     if (categoryId) {
-      const category = await this.categoriesRepository.findByIdAndAccountId(
+      const category = await this.categoriesRepository.findByIdAndWalletId(
         categoryId,
-        account.id.toString()
+        wallet.id.toString()
       )
 
       if (!category) {
@@ -76,23 +74,23 @@ export class CreateTransactionUseCase {
       case 'expense':
         transactionOperation = TransactionOperation.EXPENSE
 
-        account.withdraw(formattedAmount)
+        wallet.withdraw(formattedAmount)
 
         break
       case 'income':
         transactionOperation = TransactionOperation.INCOME
 
-        account.deposit(formattedAmount)
+        wallet.deposit(formattedAmount)
 
         break
       default:
         return left(new InvalidTransactionOperationError())
     }
 
-    await this.accountsRepository.save(account)
+    await this.walletsRepository.save(wallet)
 
     const transaction = Transaction.create({
-      accountId: account.id,
+      walletId: wallet.id,
       categoryId: categoryId ? new UniqueEntityID(categoryId) : undefined,
       title,
       description,

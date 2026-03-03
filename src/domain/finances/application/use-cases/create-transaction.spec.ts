@@ -1,14 +1,14 @@
 import { CreateTransactionUseCase } from './create-transaction'
-import { InMemoryAccountsRepository } from 'test/unit/repositories/in-memory-accounts-repository'
+import { InMemoryWalletsRepository } from 'test/unit/repositories/in-memory-wallets-repository'
 import { InMemoryTransactionsRepository } from 'test/unit/repositories/in-memory-transactions-repository'
-import { makeAccount } from 'test/unit/factories/make-account'
+import { makeWallet } from 'test/unit/factories/make-wallet'
 import { InMemoryCategoriesRepository } from 'test/unit/repositories/in-memory-category-repository'
 import { makeCategory } from 'test/unit/factories/make-category'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
 
-let accountsRepository: InMemoryAccountsRepository
+let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository
 let categoriesRepository: InMemoryCategoriesRepository
 
@@ -16,20 +16,20 @@ let sut: CreateTransactionUseCase
 
 describe('Create transaction use case', () => {
   beforeEach(() => {
-    accountsRepository = new InMemoryAccountsRepository()
+    walletsRepository = new InMemoryWalletsRepository()
     transactionsRepository = new InMemoryTransactionsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
 
     sut = new CreateTransactionUseCase(
-      accountsRepository,
+      walletsRepository,
       transactionsRepository,
       categoriesRepository,
     )
   })
 
   it('should be able to create transactions', async () => {
-    await accountsRepository.create(
-      makeAccount({
+    await walletsRepository.create(
+      makeWallet({
         holderId: new UniqueEntityID('member-1'),
         balance: 0,
       }, new UniqueEntityID('member-1'))
@@ -42,11 +42,11 @@ describe('Create transaction use case', () => {
       operation: 'income',
     })
 
-    expect(accountsRepository.items[0].balance).toBe(2000)
+    expect(walletsRepository.items[0].balance).toBe(2000)
 
     const expenseResult = await sut.execute({
       memberId: 'member-1',
-      title: 'Pay Account Debt',
+      title: 'Pay Wallet Debt',
       amount: 450.55,
       operation: 'expense',
     })
@@ -61,24 +61,24 @@ describe('Create transaction use case', () => {
       expect(incomeResult.value.transaction.amount).toBe(2000)
       expect(expenseResult.value.transaction.amount).toBe(450.55)
 
-      expect(accountsRepository.items[0].balance).toBe(1549.45)
+      expect(walletsRepository.items[0].balance).toBe(1549.45)
     }
   })
 
   it('should be able to create transactions from a category', async () => {
-    await accountsRepository.create(
-      makeAccount({
+    await walletsRepository.create(
+      makeWallet({
         holderId: new UniqueEntityID('member-1'),
         balance: 100,
       },
-        new UniqueEntityID('account-1'),
+        new UniqueEntityID('wallet-1'),
       )
     )
 
     await categoriesRepository.create(
       makeCategory(
         {
-          accountId: new UniqueEntityID('account-1'),
+          walletId: new UniqueEntityID('wallet-1'),
           name: 'Transport',
         },
         new UniqueEntityID('category-1'),
@@ -98,24 +98,24 @@ describe('Create transaction use case', () => {
     if (result.isRight()) {
       expect(result.value.transaction.isExpense()).toBe(true)
       expect(result.value.transaction.amount).toBe(25.9)
-      expect(accountsRepository.items[0].balance).toBe(74.1)
+      expect(walletsRepository.items[0].balance).toBe(74.1)
       expect(result.value.transaction.categoryId?.toString()).toBe('category-1')
     }
   })
 
-  it('should not be able to create transactions from a category of another account', async () => {
-    await accountsRepository.create(
-      makeAccount(
+  it('should not be able to create transactions from a category of another wallet', async () => {
+    await walletsRepository.create(
+      makeWallet(
         {
           holderId: new UniqueEntityID('member-1'),
         },
-        new UniqueEntityID('account-1'),
+        new UniqueEntityID('wallet-1'),
       ),
     )
 
     await categoriesRepository.create(
       makeCategory({
-        accountId: new UniqueEntityID('another-account-id')
+        walletId: new UniqueEntityID('another-wallet-id')
       }, new UniqueEntityID('category-1')),
     )
 

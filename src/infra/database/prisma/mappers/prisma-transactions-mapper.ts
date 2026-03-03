@@ -6,7 +6,7 @@ export class PrismaTransactionMapper {
     static toDomain(raw: PrismaTransaction): Transaction {
         return Transaction.create(
             {
-                accountId: new UniqueEntityID(raw.accountId),
+                walletId: new UniqueEntityID(raw.walletId),
                 categoryId: raw.categoryId ? new UniqueEntityID(raw.categoryId) : null,
                 title: raw.title,
                 amount: raw.amount.toNumber(),
@@ -22,7 +22,7 @@ export class PrismaTransactionMapper {
 
     static toPrisma(transaction: Transaction): Prisma.TransactionUncheckedCreateInput {
         return {
-            accountId: transaction.accountId.toString(),
+            walletId: transaction.walletId.toString(),
             categoryId: transaction.categoryId?.toString(),
             title: transaction.title,
             amount: transaction.amount,

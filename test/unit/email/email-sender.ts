@@ -1,11 +1,13 @@
-import { EmailProps, EmailSender } from "@/domain/identity/application/email/email-sender";
+import { EmailSender } from "@/domain/identity/application/email/email-sender";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class EmailSenderMock extends EmailSender {
-    public emails: EmailProps[] = []
+    public emails: { to: string; subject: string; text: string }[] = []
 
-    async send({ to, subject, text }: EmailProps) {
-        this.emails.push({ to, subject, text })
+    sendRecoveryCode(to: string, code: string) {
+        this.emails.push({ to, subject: "Recovery Code", text: `Your recovery code is: ${code}` })
+
+        return Promise.resolve()
     }
 }

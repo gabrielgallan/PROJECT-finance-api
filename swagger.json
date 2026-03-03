@@ -156,16 +156,16 @@
         ]
       }
     },
-    "/api/accounts": {
+    "/api/wallets": {
       "post": {
-        "operationId": "OpenAccountController_handle",
+        "operationId": "OpenWalletController_handle",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OpenAccountBodyDTO"
+                "$ref": "#/components/schemas/OpenWalletBodyDTO"
               }
             }
           }
@@ -176,33 +176,7 @@
           }
         },
         "tags": [
-          "Account"
-        ]
-      }
-    },
-    "/api/account": {
-      "delete": {
-        "operationId": "CloseAccountController_handle",
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Account"
-        ]
-      },
-      "get": {
-        "operationId": "GetAccountInfoController_handle",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Account"
+          "Wallet"
         ]
       }
     },
@@ -225,7 +199,7 @@
             "description": ""
           }
         },
-        "summary": "create a new account category",
+        "summary": "create a new wallet category",
         "tags": [
           "Categories"
         ]
@@ -238,7 +212,7 @@
             "description": ""
           }
         },
-        "summary": "list all account categories",
+        "summary": "list all wallet categories",
         "tags": [
           "Categories"
         ]
@@ -272,7 +246,7 @@
             "description": ""
           }
         },
-        "summary": "edit an account category",
+        "summary": "edit an wallet category",
         "tags": [
           "Categories"
         ]
@@ -303,14 +277,14 @@
         ]
       },
       "get": {
-        "operationId": "ListAccountTransactionsController_handle",
+        "operationId": "ListWalletTransactionsController_handle",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "summary": "list account transactions with pagination and optional filters",
+        "summary": "list wallet transactions with pagination and optional filters",
         "tags": [
           "Transactions"
         ]
@@ -318,7 +292,7 @@
     },
     "/api/transactions/{id}": {
       "put": {
-        "operationId": "EditAccountTransactionController_handle",
+        "operationId": "EditWalletTransactionController_handle",
         "parameters": [
           {
             "name": "id",
@@ -352,22 +326,22 @@
         ]
       }
     },
-    "/api/account/summary": {
+    "/api/wallet/summary": {
       "get": {
-        "operationId": "GetAccountSummaryController_handle",
+        "operationId": "GetWalletSummaryController_handle",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "summary": "get account summary for a given period",
+        "summary": "get wallet summary for a given period",
         "tags": [
           "Summaries"
         ]
       }
     },
-    "/api/account/categories/summary": {
+    "/api/wallet/categories/summary": {
       "get": {
         "operationId": "GetSummariesByCategoriesController_handle",
         "parameters": [],
@@ -376,13 +350,13 @@
             "description": ""
           }
         },
-        "summary": "get account summaries grouped by categories for a given period",
+        "summary": "get wallet summaries grouped by categories for a given period",
         "tags": [
           "Summaries"
         ]
       }
     },
-    "/api/account/year/progress": {
+    "/api/wallet/year/progress": {
       "get": {
         "operationId": "GetRollingYearProgressController_handle",
         "parameters": [],
@@ -394,6 +368,20 @@
         "summary": "get rolling year progress",
         "tags": [
           "Summaries"
+        ]
+      }
+    },
+    "/api/wallet": {
+      "get": {
+        "operationId": "GetWalletInfoController_handle",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Wallet"
         ]
       }
     }
@@ -445,7 +433,8 @@
             "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
           },
           "password": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           }
         },
         "required": [
@@ -493,7 +482,7 @@
           "password"
         ]
       },
-      "OpenAccountBodyDTO": {
+      "OpenWalletBodyDTO": {
         "type": "object",
         "properties": {
           "initialBalance": {

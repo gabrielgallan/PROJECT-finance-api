@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Encrypter } from '@/domain/identity/application/cryptography/encrypter'
-import { Account } from '@prisma/client'
+import { Wallet } from '@prisma/client'
 import { UUIDGenerator } from 'test/e2e/factories/uuid-generator'
 
 describe('List transaction tests', () => {
@@ -12,7 +12,7 @@ describe('List transaction tests', () => {
     let prisma: PrismaService
     let encrypter: Encrypter
 
-    let account: Account
+    let wallet: Wallet
     let token: string
 
     const uuids = UUIDGenerator(2)
@@ -28,7 +28,7 @@ describe('List transaction tests', () => {
 
         encrypter = moduleRef.get(Encrypter)
 
-        account = await prisma.account.create({
+        wallet = await prisma.wallet.create({
             data: {
                 holder: {
                     create: {
@@ -101,7 +101,7 @@ describe('List transaction tests', () => {
             }
         })
 
-        token = await encrypter.encrypt({ sub: account.holderId })
+        token = await encrypter.encrypt({ sub: wallet.holderId })
 
         await app.init()
     })

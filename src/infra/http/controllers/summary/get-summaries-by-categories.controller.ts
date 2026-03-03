@@ -7,10 +7,9 @@ import { z } from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
-import { MemberAccountNotFoundError } from '@/domain/finances/application/use-cases/errors/member-account-not-found-error';
-import { AccountSummaryPresenter } from '../../presenters/account-summary-presenter';
-import { GetAccountSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-account-summaries-by-categories';
-import { AnyCategoryFoundForAccountError } from '@/domain/finances/application/use-cases/errors/any-category-found-for-account-error';
+import { WalletSummaryPresenter } from '../../presenters/wallet-summary-presenter';
+import { GetWalletSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-wallet-summaries-by-categories';
+import { AnyCategoryFoundForWalletError } from '@/domain/finances/application/use-cases/errors/any-category-found-for-wallet-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -25,11 +24,11 @@ type GetSummariesByCategoriesQueryDTO = z.infer<typeof querySchema>
 @ApiTags('Summaries')
 export class GetSummariesByCategoriesController {
     constructor(
-        private getSummariesByCategories: GetAccountSummariesByCategoriesUseCase
+        private getSummariesByCategories: GetWalletSummariesByCategoriesUseCase
     ) { }
 
-    @Get('/account/categories/summary')
-    @ApiOperation({ summary: 'get account summaries grouped by categories for a given period' })
+    @Get('/wallet/categories/summary')
+    @ApiOperation({ summary: 'get wallet summaries grouped by categories for a given period' })
     async handle(
         @CurrentUser() user: UserPayload,
         @Query(new ZodValidationPipe(querySchema)) query: GetSummariesByCategoriesQueryDTO
@@ -48,11 +47,8 @@ export class GetSummariesByCategoriesController {
             const error = result.value
 
             switch (error.constructor) {
-                case MemberAccountNotFoundError:
+                case AnyCategoryFoundForWalletError:
                     throw new NotFoundException(error.message)
-
-                case AnyCategoryFoundForAccountError:
-                    throw new NotFoundException(error.message   )
 
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
@@ -63,9 +59,9 @@ export class GetSummariesByCategoriesController {
         }
 
         return {
-            total: AccountSummaryPresenter.toHTTP(result.value.fullTermAccounSummary),
+            total: WalletSummaryPresenter.toHTTP(result.value.fullTermAccounSummary),
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            categories: result.value.fromCategoriesSummaries.map(AccountSummaryPresenter.toHTTP)
+            categories: result.value.fromCategoriesSummaries.map(WalletSummaryPresenter.toHTTP)
         }
     }
 }

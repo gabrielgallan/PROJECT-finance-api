@@ -2,7 +2,6 @@ import { Body, Controller, HttpCode, InternalServerErrorException, NotFoundExcep
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { MemberAccountNotFoundError } from '@/domain/finances/application/use-cases/errors/member-account-not-found-error';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import z from 'zod';
 import { EditTransactionUseCase } from '@/domain/finances/application/use-cases/edit-transaction';
@@ -26,7 +25,7 @@ class EditTransactionParamDTO extends createZodDto(editTransactionParamSchema) {
 
 @ApiTags('Transactions')
 @Controller('/api')
-export class EditAccountTransactionController {
+export class EditWalletTransactionController {
     constructor(
         private editTransaction: EditTransactionUseCase
     ) { }
@@ -58,11 +57,8 @@ export class EditAccountTransactionController {
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
 
-                case MemberAccountNotFoundError:
-                    throw new NotFoundException(error.message)
-
                 case NotAllowedError:
-                    throw new UnauthorizedException(`This transaction doesn't belong to your account`)
+                    throw new UnauthorizedException(`This transaction doesn't belong to your wallet`)
 
                 default:
                     throw new InternalServerErrorException()

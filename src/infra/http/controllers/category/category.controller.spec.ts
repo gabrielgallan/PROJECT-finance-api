@@ -25,7 +25,7 @@ describe('Categories tests', () => {
     })
 
     it('[POST] /api/categories', async () => {
-        const account = await prisma.account.create({
+        const wallet = await prisma.wallet.create({
             data: {
                 holder: {
                     create: {
@@ -35,9 +35,9 @@ describe('Categories tests', () => {
             }
         })
 
-        const token = await encrypter.encrypt({ sub: account.holderId })
+        const token = await encrypter.encrypt({ sub: wallet.holderId })
 
-        return await request(app.getHttpServer())
+        await request(app.getHttpServer())
             .post('/api/categories')
             .set('Authorization', `Bearer ${token}`)
             .send({
@@ -48,7 +48,7 @@ describe('Categories tests', () => {
     })
 
     it('[GET] /api/categories', async () => {
-        const account = await prisma.account.create({
+        const wallet = await prisma.wallet.create({
             data: {
                 holder: {
                     create: {
@@ -72,7 +72,7 @@ describe('Categories tests', () => {
             }
         })
 
-        const token = await encrypter.encrypt({ sub: account.holderId })
+        const token = await encrypter.encrypt({ sub: wallet.holderId })
 
         const response = await request(app.getHttpServer())
             .get('/api/categories')
@@ -84,7 +84,7 @@ describe('Categories tests', () => {
     })
 
     it('[PUT] /api/categories/:slug', async () => {
-        const account = await prisma.account.create({
+        const wallet = await prisma.wallet.create({
             data: {
                 holder: {
                     create: {
@@ -104,9 +104,9 @@ describe('Categories tests', () => {
             }
         })
 
-        const token = await encrypter.encrypt({ sub: account.holderId })
+        const token = await encrypter.encrypt({ sub: wallet.holderId })
 
-        return await request(app.getHttpServer())
+        await request(app.getHttpServer())
             .put('/api/categories/uber')
             .set('Authorization', `Bearer ${token}`)
             .send({

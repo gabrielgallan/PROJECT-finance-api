@@ -1,44 +1,44 @@
-import { AccountSummaryCalculator } from "./account-summary-calculator";
+import { WalletSummaryCalculator } from "./wallet-summary-calculator";
 import { DateInterval } from "@/core/types/repositories/date-interval";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Category } from "../../../enterprise/entities/category";
 import { Transaction } from "../../../enterprise/entities/transaction";
-import { AccountSummary } from "../../../enterprise/entities/value-objects/summaries/account-summary";
-import { AccountSummaryComparator } from "./account-summary-comparator";
+import { WalletSummary } from "../../../enterprise/entities/value-objects/summaries/wallet-summary";
+import { WalletSummaryComparator } from "./wallet-summary-comparator";
 
 interface SummarizeByCategoriesInput {
-    accountId: UniqueEntityID
-    categories: Category[]
-    transactions: Transaction[]
-    interval: DateInterval
+  walletId: UniqueEntityID
+  categories: Category[]
+  transactions: Transaction[]
+  interval: DateInterval
 }
 
 export class FinancialAnalyticsService {
   summarizeByCategories({
-    accountId,
+    walletId,
     categories,
     transactions,
     interval
   }: SummarizeByCategoriesInput) {
-    const totalSummary = AccountSummaryCalculator.calculate({
-      accountId,
+    const totalSummary = WalletSummaryCalculator.calculate({
+      walletId,
       interval,
       transactions
     })
 
-    const partsSummaries: AccountSummary[] = []
+    const partsSummaries: WalletSummary[] = []
 
     for (const category of categories) {
       const transactionsByCategory = transactions.filter(t => t.categoryId?.toString() === category.id.toString())
 
-      const categorySummary = AccountSummaryCalculator.calculate({
-        accountId,
+      const categorySummary = WalletSummaryCalculator.calculate({
+        walletId,
         categoryId: category.id,
         interval,
         transactions: transactionsByCategory
       })
 
-      const percentages = AccountSummaryComparator.compare({
+      const percentages = WalletSummaryComparator.compare({
         totalSummary,
         partSummary: categorySummary
       })
@@ -49,8 +49,8 @@ export class FinancialAnalyticsService {
     }
 
     return {
-        totalSummary,
-        partsSummaries
+      totalSummary,
+      partsSummaries
     }
   }
 }

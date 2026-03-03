@@ -2,10 +2,10 @@ import { Body, Controller, InternalServerErrorException, Post } from '@nestjs/co
 import z from 'zod'
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { Public } from '@/infra/auth/public'
-import { AuthenticateWithExternalProviderUseCase } from '@/domain/identity/application/use-cases/authenticate-with-external-provider'
-import { ExternalAccountProvider } from '@prisma/client'
+import { AuthenticateWithProviderUseCase } from '@/domain/identity/application/use-cases/authenticate-with-provider'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
+import { AccountProvider } from '@prisma/client'
 
 const bodySchema = z.object({
     code: z.string()
@@ -18,7 +18,7 @@ class AuthenticateWithGithubBodyDTO extends createZodDto(bodySchema) { }
 @ApiTags('Authentication')
 export class AuthenticateWithGithubController {
     constructor(
-        private authenticateWithGitHub: AuthenticateWithExternalProviderUseCase
+        private authenticateWithGitHub: AuthenticateWithProviderUseCase
     ) { }
 
     @Post('/sessions/github')
@@ -29,7 +29,7 @@ export class AuthenticateWithGithubController {
         const { code } = body
 
         const result = await this.authenticateWithGitHub.execute({
-            provider: ExternalAccountProvider.GITHUB,
+            provider: AccountProvider.GITHUB,
             code
         })
 

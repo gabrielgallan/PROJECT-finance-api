@@ -4,15 +4,15 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Encrypter } from '@/domain/identity/application/cryptography/encrypter'
-import { Account } from '@prisma/client'
+import { Wallet } from '@prisma/client'
 import { UUIDGenerator } from 'test/e2e/factories/uuid-generator'
 
-describe('Get account summaries by categories tests', () => {
+describe('Get wallet summaries by categories tests', () => {
     let app: INestApplication
     let prisma: PrismaService
     let encrypter: Encrypter
 
-    let account: Account
+    let wallet: Wallet
     let token: string
 
     const uuids = UUIDGenerator(3)
@@ -29,7 +29,7 @@ describe('Get account summaries by categories tests', () => {
 
         encrypter = moduleRef.get(Encrypter)
 
-        account = await prisma.account.create({
+        wallet = await prisma.wallet.create({
             data: {
                 holder: {
                     create: {
@@ -107,7 +107,7 @@ describe('Get account summaries by categories tests', () => {
             }
         })
 
-        token = await encrypter.encrypt({ sub: account.holderId })
+        token = await encrypter.encrypt({ sub: wallet.holderId })
 
         await app.init()
     })
@@ -120,11 +120,11 @@ describe('Get account summaries by categories tests', () => {
         vi.useRealTimers()
     })
 
-    it('[GET] /api/account/categories/summary?start={date}&end={date}', async () => {
+    it('[GET] /api/wallet/categories/summary?start={date}&end={date}', async () => {
         vi.setSystemTime(new Date(2025, 0, 30))
 
         const response = await request(app.getHttpServer())
-            .get('/api/account/categories/summary')
+            .get('/api/wallet/categories/summary')
             .set('Authorization', `Bearer ${token}`)
             .query({
                 start: '2025-01-01',

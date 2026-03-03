@@ -7,6 +7,7 @@ import { makeUser } from 'test/unit/factories/make-user'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeToken } from 'test/unit/factories/make-token'
 import { InvalidTokenError } from './errors/invalid-token-error'
+import { TokenType } from '../../enterprise/entities/token'
 
 let usersRepository: InMemoryUsersRepository
 let tokensRepository: InMemoryTokensRepository
@@ -41,7 +42,7 @@ describe('Reset user password use case', () => {
     await tokensRepository.create(
       await makeToken({
         userId: new UniqueEntityID('user-1'),
-        type: 'PASSWORD_RECOVER',
+        type: TokenType.PASSWORD_RECOVER,
       }, new UniqueEntityID('token-1'))
     )
 
@@ -63,7 +64,7 @@ describe('Reset user password use case', () => {
     await tokensRepository.create(
       await makeToken({
         userId: new UniqueEntityID('user-1'),
-        type: 'PASSWORD_RECOVER',
+        type: TokenType.PASSWORD_RECOVER,
       }, new UniqueEntityID('token-1'))
     )
 
@@ -86,7 +87,7 @@ describe('Reset user password use case', () => {
     await tokensRepository.create(
       await makeToken({
         userId: new UniqueEntityID('user-1'),
-        type: 'PASSWORD_RECOVER',
+        type: TokenType.PASSWORD_RECOVER,
       }, new UniqueEntityID('token-1'))
     )
 

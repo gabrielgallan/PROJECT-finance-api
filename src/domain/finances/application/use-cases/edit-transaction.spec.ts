@@ -1,48 +1,45 @@
-import { IAccountsRepository } from '../repositories/accounts-repository'
-import { ITransactionsRepository } from '../repositories/transactions-repository'
-import { InMemoryAccountsRepository } from 'test/unit/repositories/in-memory-accounts-repository'
+import { InMemoryWalletsRepository } from 'test/unit/repositories/in-memory-wallets-repository'
 import { InMemoryTransactionsRepository } from 'test/unit/repositories/in-memory-transactions-repository'
-import { makeAccount } from 'test/unit/factories/make-account'
+import { makeWallet } from 'test/unit/factories/make-wallet'
 import { InMemoryCategoriesRepository } from 'test/unit/repositories/in-memory-category-repository'
-import { ICategoriesRepository } from '../repositories/categories-repository'
 import { makeCategory } from 'test/unit/factories/make-category'
 import { EditTransactionUseCase } from './edit-transaction'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeTransaction } from 'test/unit/factories/make-transaction'
 
-let accountsRepository: IAccountsRepository
-let transactionsRepository: ITransactionsRepository
-let categoriesRepository: ICategoriesRepository
+let walletsRepository: InMemoryWalletsRepository
+let transactionsRepository: InMemoryTransactionsRepository
+let categoriesRepository: InMemoryCategoriesRepository
 
 let sut: EditTransactionUseCase
 
 describe('Edit transaction use case', () => {
   beforeEach(() => {
-    accountsRepository = new InMemoryAccountsRepository()
+    walletsRepository = new InMemoryWalletsRepository()
     transactionsRepository = new InMemoryTransactionsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
 
     sut = new EditTransactionUseCase(
-      accountsRepository,
+      walletsRepository,
       transactionsRepository,
       categoriesRepository,
     )
   })
 
   it('should be able to edit a transaction', async () => {
-    await accountsRepository.create(
-      makeAccount(
+    await walletsRepository.create(
+      makeWallet(
         {
           holderId: new UniqueEntityID('member-1'),
         },
-        new UniqueEntityID('account-1'),
+        new UniqueEntityID('wallet-1'),
       ),
     )
 
     await categoriesRepository.create(
       makeCategory(
         {
-          accountId: new UniqueEntityID('account-1'),
+          walletId: new UniqueEntityID('wallet-1'),
           name: 'Monthly Bills',
         },
         new UniqueEntityID('category-2'),
@@ -52,7 +49,7 @@ describe('Edit transaction use case', () => {
     await transactionsRepository.create(
       makeTransaction(
         {
-          accountId: new UniqueEntityID('account-1'),
+          walletId: new UniqueEntityID('wallet-1'),
           title: 'Netflix',
           amount: 39.99,
         },

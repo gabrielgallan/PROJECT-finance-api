@@ -1,26 +1,26 @@
 import { ValueObject } from '@/core/entities/value-object'
-import { AccountSummary } from './account-summary'
+import { WalletSummary } from './wallet-summary'
 
-export interface YearMonthSummaryProps {
+export interface MonthSummaryProps {
+    year: number
     monthIndex: number
-    title?: string
-    summary: AccountSummary
+    summary: WalletSummary
 }
 
-export interface YearAccountSummaryProps {
-    summary: AccountSummary
-    monthSummaries: YearMonthSummaryProps[]
+export interface YearWalletSummaryProps {
+    yearSummary: WalletSummary
+    monthSummaries: MonthSummaryProps[]
 }
 
-export class YearAccountSummary extends ValueObject<YearAccountSummaryProps> {
+export class YearWalletSummary extends ValueObject<YearWalletSummaryProps> {
     static create(
-        props: YearAccountSummaryProps,
+        props: YearWalletSummaryProps,
     ) {
-        return new YearAccountSummary(props)
+        return new YearWalletSummary(props)
     }
 
-    get summary() {
-        return this.props.summary
+    get yearSummary() {
+        return this.props.yearSummary
     }
 
     get monthSummaries() {
