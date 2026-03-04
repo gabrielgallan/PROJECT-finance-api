@@ -3,7 +3,7 @@ import { DateInterval } from "@/core/types/repositories/date-interval";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Category } from "../../../enterprise/entities/category";
 import { Transaction } from "../../../enterprise/entities/transaction";
-import { WalletSummary } from "../../../enterprise/entities/value-objects/summaries/wallet-summary";
+import { WalletSummary } from "../../../enterprise/entities/value-objects/wallet-summary";
 import { WalletSummaryComparator } from "./wallet-summary-comparator";
 
 interface SummarizeByCategoriesInput {

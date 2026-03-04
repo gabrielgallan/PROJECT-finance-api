@@ -26,7 +26,7 @@ export class ListWalletTransactionsController {
         private listTransactions: ListWalletTransactionsUseCase
     ) { }
 
-    @Get('/transactions')
+    @Get('/wallet/transactions')
     @ApiOperation({ summary: 'list wallet transactions with pagination and optional filters' })
     async handle(
         @CurrentUser() user: UserPayload,

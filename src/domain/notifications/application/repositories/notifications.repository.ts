@@ -1,7 +1,7 @@
 import { Notification } from "../../enterprise/entities/notification"
 
 
-export interface INotificationsRepository {
+export interface NotificationsRepository {
   create(notification: Notification): Promise<void>
   findById(id: string): Promise<Notification | null>
   findManyByRecipientId(recipietId: string): Promise<Notification[]>

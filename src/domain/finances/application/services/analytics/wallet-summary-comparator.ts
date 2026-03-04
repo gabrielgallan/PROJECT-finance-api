@@ -1,4 +1,4 @@
-import { WalletSummary, ComparativePercentages } from "../../../enterprise/entities/value-objects/summaries/wallet-summary";
+import { WalletSummary, ComparativePercentages } from "../../../enterprise/entities/value-objects/wallet-summary";
 import { calculatePartPercentage } from "../../utils/calculate-percentage";
 
 export interface WalletSummaryComparatorInput {

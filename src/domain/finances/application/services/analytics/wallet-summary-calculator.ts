@@ -1,5 +1,5 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { WalletSummary } from "@/domain/finances/enterprise/entities/value-objects/summaries/wallet-summary";
+import { WalletSummary } from "@/domain/finances/enterprise/entities/value-objects/wallet-summary";
 import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
 import { DateInterval } from "@/core/types/repositories/date-interval";
 import { calculateTransactionsTotals } from "../../utils/calculate-transactions-totals";

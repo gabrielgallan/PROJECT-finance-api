@@ -24,7 +24,7 @@ describe('Categories tests', () => {
         await app.init()
     })
 
-    it('[POST] /api/categories', async () => {
+    it('[POST] /api/wallet/categories', async () => {
         const wallet = await prisma.wallet.create({
             data: {
                 holder: {
@@ -38,7 +38,7 @@ describe('Categories tests', () => {
         const token = await encrypter.encrypt({ sub: wallet.holderId })
 
         await request(app.getHttpServer())
-            .post('/api/categories')
+            .post('/api/wallet/categories')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 name: 'Sports',
@@ -47,7 +47,7 @@ describe('Categories tests', () => {
             .expect(201)
     })
 
-    it('[GET] /api/categories', async () => {
+    it('[GET] /api/wallet/categories', async () => {
         const wallet = await prisma.wallet.create({
             data: {
                 holder: {
@@ -75,7 +75,7 @@ describe('Categories tests', () => {
         const token = await encrypter.encrypt({ sub: wallet.holderId })
 
         const response = await request(app.getHttpServer())
-            .get('/api/categories')
+            .get('/api/wallet/categories')
             .set('Authorization', `Bearer ${token}`)
             .send()
             .expect(200)
@@ -83,7 +83,7 @@ describe('Categories tests', () => {
         expect(response.body.categories).toHaveLength(2)
     })
 
-    it('[PUT] /api/categories/:slug', async () => {
+    it('[PUT] /api/wallet/categories/:slug', async () => {
         const wallet = await prisma.wallet.create({
             data: {
                 holder: {
@@ -107,7 +107,7 @@ describe('Categories tests', () => {
         const token = await encrypter.encrypt({ sub: wallet.holderId })
 
         await request(app.getHttpServer())
-            .put('/api/categories/uber')
+            .put('/api/wallet/categories/uber')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 name: 'Transport'

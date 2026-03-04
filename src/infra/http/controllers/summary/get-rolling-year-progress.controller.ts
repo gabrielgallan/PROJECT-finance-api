@@ -13,7 +13,7 @@ export class GetRollingYearProgressController {
         private getRollingYearProgress: GetRollingYearProgressUseCase
     ) { }
 
-    @Get('/wallet/year/progress')
+    @Get('/wallet/summary/year')
     @ApiOperation({ summary: 'get rolling year progress' })
     async handle(
         @CurrentUser() user: UserPayload,
@@ -35,7 +35,7 @@ export class GetRollingYearProgressController {
         }
 
         return {
-            progress: YearProgressPresenter.toHTTP(result.value.yearWalletSummary)
+            progress: YearProgressPresenter.toHTTP(result.value.progress)
         }
     }
 }

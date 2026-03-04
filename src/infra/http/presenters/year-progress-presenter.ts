@@ -1,16 +1,17 @@
-import { YearWalletSummary } from "@/domain/finances/enterprise/entities/value-objects/summaries/year-account-summary"
+import { YearProgress } from "@/domain/finances/application/use-cases/get-rolling-yearly-progress"
 
 export class YearProgressPresenter {
-    static toHTTP(summary: YearWalletSummary) {
+    static toHTTP(progress: YearProgress) {
         return {
             year: {
-                interval: summary.yearSummary.interval,
-                totals: summary.yearSummary.totals,
-                netBalance: summary.yearSummary.netBalance,
-                counts: summary.yearSummary.counts,
+                interval: progress.yearSummary.interval,
+                totals: progress.yearSummary.totals,
+                netBalance: progress.yearSummary.netBalance,
+                counts: progress.yearSummary.counts,
             },
-            months: summary.monthSummaries.map(m => {
+            months: progress.months.map(m => {
                 return {
+                    year: m.year,
                     monthIndex: m.monthIndex,
                     summary: {
                         totals: m.summary.totals,

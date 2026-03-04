@@ -1,14 +1,21 @@
 import { Either, left, right } from '@/core/types/either'
 import { WalletsRepository } from '../repositories/wallets-repository'
 import { TransactionsRepository } from '../repositories/transactions-repository'
-import dayjs from 'dayjs'
-
-import { getMonthDateRange } from '../utils/get-month-date-range'
-import { YearWalletSummary, MonthSummaryProps } from '../../enterprise/entities/value-objects/summaries/year-account-summary'
-import { WalletSummaryCalculator } from '../services/financial-analytics/wallet-summary-calculator'
-import { WalletSummaryComparator } from '../services/financial-analytics/wallet-summary-comparator'
+import { WalletSummaryCalculator } from '../services/analytics/wallet-summary-calculator'
+import { WalletSummaryComparator } from '../services/analytics/wallet-summary-comparator'
 import { Injectable } from '@nestjs/common'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { DateRangeConstructor } from '../services/dates/date-range-constructor'
+import { WalletSummary } from '../../enterprise/entities/value-objects/wallet-summary'
+
+export interface YearProgress {
+    yearSummary: WalletSummary,
+    months: {
+        year: number
+        monthIndex: number,
+        summary: WalletSummary
+    }[]
+}
 
 interface GetRollingYearProgressUseCaseRequest {
     memberId: string
@@ -17,7 +24,7 @@ interface GetRollingYearProgressUseCaseRequest {
 type GetRollingYearProgressUseCaseResponse = Either<
     ResourceNotFoundError,
     {
-        yearWalletSummary: YearWalletSummary
+        progress: YearProgress
     }
 >
 
@@ -37,35 +44,32 @@ export class GetRollingYearProgressUseCase {
             return left(new ResourceNotFoundError())
         }
 
-        const rollingYearEndDate = new Date()
-        const rollingYearStartDate = new Date()
-
-        rollingYearStartDate.setFullYear(rollingYearEndDate.getFullYear() - 1)
+        const { months } = DateRangeConstructor.getLastTwelveMonths()
 
         const yearInterval = {
-            startDate: rollingYearStartDate,
-            endDate: rollingYearEndDate
+            startDate: months[0].interval.startDate,
+            endDate: months[months.length - 1].interval.endDate
         }
 
-        const rollingYearTransactions = await this.transactionsRepository.findManyByQuery({
+        const yearTransactions = await this.transactionsRepository.findManyByQuery({
             walletId: wallet.id.toString(),
             interval: yearInterval,
         })
 
-        const rollingYearSummary = WalletSummaryCalculator.calculate({
+        const yearSummary = WalletSummaryCalculator.calculate({
             walletId: wallet.id,
             interval: yearInterval,
-            transactions: rollingYearTransactions
+            transactions: yearTransactions
         })
 
-        const rollingMonthsSummaries: MonthSummaryProps[] = []
+        const monthsSummaries: {
+            year: number,
+            monthIndex: number,
+            summary: WalletSummary
+        }[] = []
 
-        for (let c = 11; c >= 0; c--) {
-            const referenceDate = dayjs().subtract(c, 'month')
-
-            const { interval } = getMonthDateRange({
-                date: referenceDate.toDate()
-            })
+        for (const month of months) {
+            const { interval } = month
 
             const transactionsByMonth =
                 await this.transactionsRepository.findManyByQuery({
@@ -80,26 +84,26 @@ export class GetRollingYearProgressUseCase {
             })
 
             const percentages = WalletSummaryComparator.compare({
-                totalSummary: rollingYearSummary,
+                totalSummary: yearSummary,
                 partSummary: monthSummary
             })
 
             monthSummary.percentages = percentages
 
-            rollingMonthsSummaries.push({
-                year: referenceDate.year(),
-                monthIndex: referenceDate.month() + 1,
+            monthsSummaries.push({
+                year: month.year,
+                monthIndex: month.month,
                 summary: monthSummary
             })
         }
 
-        const yearWalletSummary = YearWalletSummary.create({
-            yearSummary: rollingYearSummary,
-            monthSummaries: rollingMonthsSummaries
-        })
+        const progress = {
+            yearSummary,
+            months: monthsSummaries
+        }
 
         return right({
-            yearWalletSummary
+            progress
         })
     }
 }

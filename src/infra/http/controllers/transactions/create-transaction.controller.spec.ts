@@ -40,9 +40,9 @@ describe('Create transaction tests', () => {
         await app.init()
     })
 
-    it('[POST] /api/transactions', async () => {
+    it('[POST] /api/wallet/transactions', async () => {
         return await request(app.getHttpServer())
-            .post('/api/transactions')
+            .post('/api/wallet/transactions')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'Month Salary',

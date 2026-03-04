@@ -30,7 +30,7 @@ export class EditWalletTransactionController {
         private editTransaction: EditTransactionUseCase
     ) { }
 
-    @Put('/transactions/:id')
+    @Put('/wallet/transactions/:id')
     @HttpCode(204)
     @ApiOperation({ summary: 'edit a transaction' })
     async handle(

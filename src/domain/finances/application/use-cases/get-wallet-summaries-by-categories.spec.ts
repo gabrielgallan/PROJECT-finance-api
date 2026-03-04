@@ -7,7 +7,7 @@ import { InMemoryCategoriesRepository } from 'test/unit/repositories/in-memory-c
 import { makeTransaction } from 'test/unit/factories/make-transaction'
 import { TransactionOperation } from '@/domain/finances/enterprise/entities/transaction'
 import { makeCategory } from 'test/unit/factories/make-category'
-import { FinancialAnalyticsService } from '../services/financial-analytics/financial-analytics-service'
+import { FinancialAnalyticsService } from '../services/analytics/financial-analytics-service'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository

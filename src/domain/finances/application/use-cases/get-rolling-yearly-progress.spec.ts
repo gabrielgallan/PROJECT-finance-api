@@ -73,11 +73,11 @@ describe('Get rolling yearly progress use case', () => {
     expect(result.isRight()).toBe(true)
 
     if (result.isRight()) {
-      expect(result.value.yearWalletSummary.monthSummaries).toHaveLength(12)
-      expect(result.value.yearWalletSummary.monthSummaries).toEqual(
+      expect(result.value.progress.months).toHaveLength(12)
+      expect(result.value.progress.months).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            monthIndex: 10,
+            monthIndex: 9,
             summary: expect.objectContaining({
               totals: {
                 income: 179.9,

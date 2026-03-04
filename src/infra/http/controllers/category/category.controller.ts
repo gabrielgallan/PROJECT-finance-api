@@ -36,7 +36,7 @@ class EditCategoryBodyDTO extends createZodDto(editCategoryBodySchema) { }
 
 class EditCategoryParamsDTO extends createZodDto(editCategoryParamsSchema) { }
 
-@Controller('/api/categories')
+@Controller('/api/wallet/categories')
 @ApiTags('Categories')
 export class CategoryController {
     constructor(

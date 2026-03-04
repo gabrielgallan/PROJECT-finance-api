@@ -69,9 +69,9 @@ describe('Edit transaction tests', () => {
         await app.init()
     })
 
-    it('[PUT] /api/transactions/{uuid}', async () => {
+    it('[PUT] /api/wallet/transactions/{uuid}', async () => {
         await request(app.getHttpServer())
-            .put(`/api/transactions/${transactionsUUIDs[0]}`)
+            .put(`/api/wallet/transactions/${transactionsUUIDs[0]}`)
             .set('Authorization', `Bearer ${token}`)
             .send({
                 categoryId: categoriesUUIDs[1],

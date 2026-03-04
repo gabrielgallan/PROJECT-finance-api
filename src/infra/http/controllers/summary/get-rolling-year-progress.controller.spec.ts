@@ -76,11 +76,11 @@ describe('Get rolling year wallet summaries tests', () => {
         vi.useRealTimers()
     })
 
-    it('[GET] /api/wallet/year/progress', async () => {
+    it('[GET] /api/wallet/summary/year', async () => {
         vi.setSystemTime(new Date(2025, 0, 30))
 
         const response = await request(app.getHttpServer())
-            .get('/api/wallet/year/progress')
+            .get('/api/wallet/summary/year')
             .set('Authorization', `Bearer ${token}`)
             .expect(200)
 

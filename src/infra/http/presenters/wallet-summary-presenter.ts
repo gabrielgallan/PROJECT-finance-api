@@ -1,4 +1,4 @@
-import { WalletSummary } from "@/domain/finances/enterprise/entities/value-objects/summaries/wallet-summary"
+import { WalletSummary } from "@/domain/finances/enterprise/entities/value-objects/wallet-summary"
 
 export class WalletSummaryPresenter {
     static toHTTP(summary: WalletSummary) {

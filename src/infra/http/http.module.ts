@@ -35,7 +35,7 @@ import { ListWalletTransactionsUseCase } from '@/domain/finances/application/use
 import { EditTransactionUseCase } from '@/domain/finances/application/use-cases/edit-transaction'
 import { GetWalletSummaryUseCase } from '@/domain/finances/application/use-cases/get-wallet-summary'
 import { GetWalletSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-wallet-summaries-by-categories'
-import { FinancialAnalyticsService } from '@/domain/finances/application/services/financial-analytics/financial-analytics-service'
+import { FinancialAnalyticsService } from '@/domain/finances/application/services/analytics/financial-analytics-service'
 import { GetRollingYearProgressUseCase } from '@/domain/finances/application/use-cases/get-rolling-yearly-progress'
 import { EnvModule } from '../env/env.module'
 import { EmailModule } from '../email/email.module'

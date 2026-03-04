@@ -19,8 +19,8 @@ POST {{baseUrl}}/api/sessions
 Content-Type: application/json
 
 {
-    "email": "johndoe@email.com",
-    "password": "doe123"
+    "email": "",
+    "password": ""
 }
 
 ###
@@ -30,7 +30,7 @@ POST {{baseUrl}}/api/sessions/github
 Content-Type: application/json
 
 {
-    "code": "81862c71af685094a437"
+    "code": ""
 }
 
 ###
@@ -40,7 +40,7 @@ POST {{baseUrl}}/api/password/recover
 Content-Type: application/json
 
 {
-    "email": "johndoe@email.com"
+    "email": ""
 }
 
 ###
@@ -50,8 +50,8 @@ PUT {{baseUrl}}/api/profile/password
 Content-Type: application/json
 
 {
-    "code": "dd666ea7-842c-4748-badd-00834435258e",
-    "password": "doe123"
+    "code": "3f5fbeee-aa84-4605-a52d-ff4673053b81",
+    "password": "gab123"
 }
 
 ###
@@ -75,7 +75,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name create_category
-POST {{baseUrl}}/api/categories
+POST {{baseUrl}}/api/wallet/categories
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -86,14 +86,14 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name list_categories
-GET {{baseUrl}}/api/categories
+GET {{baseUrl}}/api/wallet/categories
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 ###
 
 # @name edit_category
-PUT {{baseUrl}}/api/categories/ifood
+PUT {{baseUrl}}/api/wallet/categories/ifood
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -118,6 +118,27 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name get_year_progress
-GET {{baseUrl}}/api/wallet/year/progress
+GET {{baseUrl}}/api/wallet/year/summary
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name create_transaction
+POST {{baseUrl}}/api/wallet/transactions
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Transaction title",
+    "description": "Transaction description",
+    "amount": 420,
+    "operation": "expense"
+}
+
+###
+
+# @name get_wallet_info
+GET {{baseUrl}}/api/wallet
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

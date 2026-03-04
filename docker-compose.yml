@@ -1,10 +1,10 @@
 services:
   postgres:
-    container_name: app-nest-pg
+    container_name: smart-finance-pg
     image: bitnami/postgresql
     ports:
       - 5432:5432
     environment:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=app_nest
+      - POSTGRESQL_DATABASE=smart_finance

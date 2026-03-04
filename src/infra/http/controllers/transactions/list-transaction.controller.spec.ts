@@ -114,11 +114,11 @@ describe('List transaction tests', () => {
         vi.useRealTimers()
     })
 
-    it('[GET] /api/transactions?categoryId={uuid}', async () => {
+    it('[GET] /api/wallet/transactions?categoryId={uuid}', async () => {
         vi.setSystemTime(new Date(2025, 0, 30))
 
         const response = await request(app.getHttpServer())
-            .get('/api/transactions')
+            .get('/api/wallet/transactions')
             .set('Authorization', `Bearer ${token}`)
             .query({
                 categoryId: uuids[0]
@@ -138,11 +138,11 @@ describe('List transaction tests', () => {
         )
     })
 
-    it('[GET] /api/transactions?page=1&limit=10', async () => {
+    it('[GET] /api/wallet/transactions?page=1&limit=10', async () => {
         vi.setSystemTime(new Date(2025, 0, 30))
 
         const response = await request(app.getHttpServer())
-            .get('/api/transactions')
+            .get('/api/wallet/transactions')
             .set('Authorization', `Bearer ${token}`)
             .query({
                 page: 1,
@@ -153,11 +153,11 @@ describe('List transaction tests', () => {
         expect(response.body.transactions).toHaveLength(5)
     })
 
-    it('[GET] /api/transactions?start=2025-01-01&end=2025-01-15', async () => {
+    it('[GET] /api/wallet/transactions?start=2025-01-01&end=2025-01-15', async () => {
         vi.setSystemTime(new Date(2025, 0, 30))
 
         const response = await request(app.getHttpServer())
-            .get('/api/transactions')
+            .get('/api/wallet/transactions')
             .set('Authorization', `Bearer ${token}`)
             .query({
                 start: '2025-01-01',

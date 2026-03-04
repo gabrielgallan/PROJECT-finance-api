@@ -1,10 +1,9 @@
 import { InMemoryNotificationsRepository } from "test/unit/repositories/in-memory-notifications-repository"
-import { INotificationsRepository } from "../repositories/notifications.repository"
 import { ReadNotificationUseCase } from "./read-notification"
 import { makeNotification } from "test/unit/factories/make-notification"
 import { UniqueEntityID } from "@/core/entities/unique-entity-id"
 
-let notificationsRepository: INotificationsRepository
+let notificationsRepository: InMemoryNotificationsRepository
 let sut: ReadNotificationUseCase
 
 describe('Read notification use case', () => {
@@ -23,17 +22,17 @@ describe('Read notification use case', () => {
     vi.setSystemTime(new Date(2026, 0, 31, 20, 0, 0))
 
     await notificationsRepository.create(
-        makeNotification(
-            {
-                recipientId: new UniqueEntityID('user-1')
-            },
-            new UniqueEntityID('notification-1')
-        )
+      makeNotification(
+        {
+          recipientId: new UniqueEntityID('user-1')
+        },
+        new UniqueEntityID('notification-1')
+      )
     )
 
     const result = await sut.execute({
-        recipientId: 'user-1',
-        notificationId: 'notification-1'
+      recipientId: 'user-1',
+      notificationId: 'notification-1'
     })
 
     expect(result.isRight()).toBe(true)

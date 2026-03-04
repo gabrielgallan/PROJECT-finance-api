@@ -68,7 +68,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
                 categoryId,
                 createdAt: {
                     gte: interval.startDate,
-                    lte: interval.endDate
+                    lt: interval.endDate
                 }
             }
         })

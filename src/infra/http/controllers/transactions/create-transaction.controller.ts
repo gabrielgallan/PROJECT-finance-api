@@ -27,7 +27,7 @@ export class CreateTransactionController {
         private createTransaction: CreateTransactionUseCase
     ) { }
 
-    @Post('/transactions')
+    @Post('/wallet/transactions')
     @ApiOperation({ summary: 'create a new transaction' })
     async handle(
         @CurrentUser() user: UserPayload,
