@@ -1,6 +1,7 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Entity } from '@/core/entities/entity'
 import { Optional } from '@/core/types/optional'
+import { roundMoney } from '../../application/utils/round-money'
 
 export interface WalletProps {
   holderId: UniqueEntityID
@@ -49,14 +50,12 @@ export class Wallet extends Entity<WalletProps> {
   }
 
   deposit(value: number) {
-    this.props.balance += value
-
+    this.props.balance = roundMoney(this.props.balance + value)
     this.touch()
   }
 
   withdraw(value: number) {
-    this.props.balance -= value
-
+    this.props.balance = roundMoney(this.props.balance - value)
     this.touch()
   }
 }
