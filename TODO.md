@@ -1,7 +1,9 @@
 ## Priority 1
 
-- Documentação Swagger e Postman
+- Finalizar Documentação Swagger e Postman
 
 ## Priority 2
+
+- Implementação do Redis para agilizar requisições de analises
 
 ## Priority 3
