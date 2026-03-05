@@ -1,5 +1,6 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
+import { Cash } from "@/domain/finances/enterprise/entities/value-objects/cash";
 import { Transaction as PrismaTransaction, Prisma } from "@prisma/client"
 
 export class PrismaTransactionMapper {
@@ -9,7 +10,7 @@ export class PrismaTransactionMapper {
                 walletId: new UniqueEntityID(raw.walletId),
                 categoryId: raw.categoryId ? new UniqueEntityID(raw.categoryId) : null,
                 title: raw.title,
-                amount: raw.amount.toNumber(),
+                amount: Cash.fromAmount(raw.amount.toNumber()),
                 description: raw.description,
                 operation: raw.operation,
                 method: raw.method,
@@ -25,7 +26,7 @@ export class PrismaTransactionMapper {
             walletId: transaction.walletId.toString(),
             categoryId: transaction.categoryId?.toString(),
             title: transaction.title,
-            amount: transaction.amount,
+            amount: new Prisma.Decimal(transaction.amount.toNumber()),
             description: transaction.description,
             operation: transaction.isIncome() ? 'income' : 'expense',
             method: transaction.method,

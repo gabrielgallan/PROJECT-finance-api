@@ -18,10 +18,10 @@ export function calculateTransactionsTotals({
     (acc, tx) => {
       if (tx.isIncome()) {
         acc.incomeTransactions.push(tx)
-        acc.totalIncome += tx.amount
+        acc.totalIncome += tx.amount.toNumber()
       } else {
         acc.expenseTransactions.push(tx)
-        acc.totalExpense += tx.amount
+        acc.totalExpense += tx.amount.toNumber()
       }
 
       return acc

@@ -7,6 +7,7 @@ import { makeCategory } from 'test/unit/factories/make-category'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository
@@ -31,7 +32,7 @@ describe('Create transaction use case', () => {
     await walletsRepository.create(
       makeWallet({
         holderId: new UniqueEntityID('member-1'),
-        balance: 0,
+        balance: Cash.fromAmount(0),
       }, new UniqueEntityID('member-1'))
     )
 
@@ -42,7 +43,7 @@ describe('Create transaction use case', () => {
       operation: 'income',
     })
 
-    expect(walletsRepository.items[0].balance).toBe(2000)
+    expect(walletsRepository.items[0].balance.toNumber()).toBe(2000)
 
     const expenseResult = await sut.execute({
       memberId: 'member-1',
@@ -58,10 +59,10 @@ describe('Create transaction use case', () => {
       expect(incomeResult.value.transaction.isIncome()).toBe(true)
       expect(expenseResult.value.transaction.isExpense()).toBe(true)
 
-      expect(incomeResult.value.transaction.amount).toBe(2000)
-      expect(expenseResult.value.transaction.amount).toBe(450.55)
+      expect(incomeResult.value.transaction.amount.toNumber()).toBe(2000)
+      expect(expenseResult.value.transaction.amount.toNumber()).toBe(450.55)
 
-      expect(walletsRepository.items[0].balance).toBe(1549.45)
+      expect(walletsRepository.items[0].balance.toNumber()).toBe(1549.45)
     }
   })
 
@@ -69,7 +70,7 @@ describe('Create transaction use case', () => {
     await walletsRepository.create(
       makeWallet({
         holderId: new UniqueEntityID('member-1'),
-        balance: 100,
+        balance: Cash.fromAmount(100),
       },
         new UniqueEntityID('wallet-1'),
       )
@@ -97,8 +98,8 @@ describe('Create transaction use case', () => {
 
     if (result.isRight()) {
       expect(result.value.transaction.isExpense()).toBe(true)
-      expect(result.value.transaction.amount).toBe(25.9)
-      expect(walletsRepository.items[0].balance).toBe(74.1)
+      expect(result.value.transaction.amount.toNumber()).toBe(25.9)
+      expect(walletsRepository.items[0].balance.toNumber()).toBe(74.1)
       expect(result.value.transaction.categoryId?.toString()).toBe('category-1')
     }
   })

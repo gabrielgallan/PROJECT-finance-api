@@ -6,10 +6,11 @@ import { MemberAlreadyHasWalletError } from './errors/member-alredy-has-wallet-e
 import { Either, left, right } from '@/core/types/either'
 import { Injectable } from '@nestjs/common'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 interface OpenWalletUseCaseRequest {
   memberId: string
-  initialBalance?: number
+  balance?: number
 }
 
 type OpenWalletUseCaseResponse = Either<
@@ -26,13 +27,11 @@ export class OpenWalletUseCase {
 
   async execute({
     memberId,
-    initialBalance,
+    balance,
   }: OpenWalletUseCaseRequest): Promise<OpenWalletUseCaseResponse> {
-    if (initialBalance && initialBalance <= 0) {
+    if (balance && balance <= 0) {
       return left(new InvalidPositiveNumberError())
     }
-
-    const formattedBalance = initialBalance ? Math.round(initialBalance * 100) / 100 : 0
 
     const member = await this.membersRepository.findById(memberId)
 
@@ -48,7 +47,7 @@ export class OpenWalletUseCase {
 
     const wallet = Wallet.create({
       holderId: member.id,
-      balance: formattedBalance,
+      balance: balance ? Cash.fromAmount(balance) : Cash.fromAmount(0),
     })
 
     await this.walletsRepository.create(wallet)

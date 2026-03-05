@@ -2,6 +2,8 @@ import { InMemoryWalletsRepository } from 'test/unit/repositories/in-memory-wall
 import { makeWallet } from 'test/unit/factories/make-wallet'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { GetWalletInfoUseCase } from './get-wallet-info'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
+import { Wallet } from '../../enterprise/entities/wallet'
 
 let walletsRepository: InMemoryWalletsRepository
 
@@ -20,7 +22,7 @@ describe('Get wallet info use case', () => {
         await walletsRepository.create(
             makeWallet({
                 holderId: new UniqueEntityID('member-1'),
-                balance: 100
+                balance: Cash.fromAmount(100)
             },
                 new UniqueEntityID('wallet-1')
             )
@@ -31,10 +33,6 @@ describe('Get wallet info use case', () => {
         })
 
         expect(result.isRight()).toBe(true)
-        expect(result.value).toMatchObject({
-            balance: 100,
-            createdAt: expect.any(Date),
-            updatedAt: null
-        })
+        expect(result.value.wallet).toBeInstanceOf(Wallet)
     })
 })

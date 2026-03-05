@@ -7,7 +7,7 @@ export function makeFinancialGoal(
     id?: UniqueEntityID
 ) {
     const financialGoal = FinancialGoal.create({
-        accountId: new UniqueEntityID(),
+        walletId: new UniqueEntityID(),
         title: faker.lorem.sentence(1),
         targetAmount: faker.number.int({ min: 0, max: 99999 }),
         targetDate: new Date(),

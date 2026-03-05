@@ -1,6 +1,7 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
+import { Cash } from './value-objects/cash'
 
 export enum TransactionOperation {
   INCOME = 'income',
@@ -11,7 +12,7 @@ export interface TransactionProps {
   walletId: UniqueEntityID
   categoryId?: UniqueEntityID | null
   title: string
-  amount: number
+  amount: Cash
   description?: string | null
   operation: 'income' | 'expense'
   method?: string | null

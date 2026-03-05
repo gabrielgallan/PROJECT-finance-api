@@ -8,6 +8,7 @@ import { makeTransaction } from 'test/unit/factories/make-transaction'
 import { TransactionOperation } from '@/domain/finances/enterprise/entities/transaction'
 import { makeCategory } from 'test/unit/factories/make-category'
 import { FinancialAnalyticsService } from '../services/analytics/financial-analytics-service'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository
@@ -75,7 +76,7 @@ describe('Get wallet summaries by categories use case', () => {
           makeTransaction({
             walletId: new UniqueEntityID('wallet-1'),
             categoryId: new UniqueEntityID('category-1'),
-            amount: 50,
+            amount: Cash.fromAmount(50),
             operation: TransactionOperation.INCOME,
           }),
         ),
@@ -88,7 +89,7 @@ describe('Get wallet summaries by categories use case', () => {
           makeTransaction({
             walletId: new UniqueEntityID('wallet-1'),
             categoryId: new UniqueEntityID('category-2'),
-            amount: 25,
+            amount: Cash.fromAmount(25),
             operation: TransactionOperation.EXPENSE,
           }),
         ),
