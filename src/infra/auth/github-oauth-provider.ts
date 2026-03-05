@@ -37,6 +37,8 @@ export class GithubOAuthProvider implements AuthProvider<
             }).safeParse(githubOAuthTokenResponse)
 
             if (!OAuthResult.success) {
+                console.log(githubOAuthTokenResponse)
+
                 throw new BadGatewayException({
                     message: 'Wrong data format returned from GitHub OAuth API'
                 })

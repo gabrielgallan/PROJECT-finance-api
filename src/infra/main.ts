@@ -2,11 +2,11 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from '@/infra/app.module'
 import { EnvService } from './env/env.service'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import * as fs from 'node:fs'
+// import * as fs from 'node:fs'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    // logger: false
+    logger: false
   })
 
   const config = new DocumentBuilder()
@@ -20,7 +20,7 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, document)
 
-  fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2))
+  // fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2))
 
   const envService = app.get(EnvService)
   const port = envService.get('PORT')

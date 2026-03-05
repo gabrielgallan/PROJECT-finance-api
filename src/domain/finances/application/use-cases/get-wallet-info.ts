@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/types/either'
 import { WalletsRepository } from '../repositories/wallets-repository'
 import { Injectable } from '@nestjs/common'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Wallet } from '../../enterprise/entities/wallet'
 
 interface GetWalletInfoUseCaseRequest {
     memberId: string
@@ -10,9 +11,7 @@ interface GetWalletInfoUseCaseRequest {
 type GetWalletInfoUseCaseResponse = Either<
     ResourceNotFoundError,
     {
-        balance: number,
-        createdAt: Date,
-        updatedAt: Date | null
+        wallet: Wallet
     }
 >
 
@@ -32,9 +31,7 @@ export class GetWalletInfoUseCase {
         }
 
         return right({
-            balance: wallet.balance,
-            createdAt: wallet.createdAt,
-            updatedAt: wallet.updatedAt ?? null
+            wallet
         })
     }
 }

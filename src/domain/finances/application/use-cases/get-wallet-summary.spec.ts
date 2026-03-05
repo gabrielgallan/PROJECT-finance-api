@@ -5,6 +5,7 @@ import { InMemoryTransactionsRepository } from 'test/unit/repositories/in-memory
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeTransaction } from 'test/unit/factories/make-transaction'
 import { TransactionOperation } from '@/domain/finances/enterprise/entities/transaction'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository
@@ -34,7 +35,7 @@ describe('Get wallet summary by interval use case', () => {
     const wallet = makeWallet(
       {
         holderId: new UniqueEntityID('member-1'),
-        balance: 250,
+        balance: Cash.fromAmount(250),
       },
       new UniqueEntityID('wallet-1'),
     )
@@ -44,7 +45,7 @@ describe('Get wallet summary by interval use case', () => {
     await transactionsRepository.create(
       makeTransaction({
         walletId: new UniqueEntityID('wallet-1'),
-        amount: 45,
+        amount: Cash.fromAmount(45),
         operation: TransactionOperation.EXPENSE,
       }),
     )

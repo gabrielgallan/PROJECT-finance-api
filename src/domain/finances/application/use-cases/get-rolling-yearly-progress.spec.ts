@@ -6,6 +6,7 @@ import { TransactionsRepository } from '../repositories/transactions-repository'
 import { makeTransaction } from 'test/unit/factories/make-transaction'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { TransactionOperation } from '../../enterprise/entities/transaction'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: TransactionsRepository
@@ -50,7 +51,7 @@ describe('Get rolling yearly progress use case', () => {
 
     await transactionsRepository.create(
       makeTransaction({
-        amount: 179.9,
+        amount: Cash.fromAmount(179.9),
         walletId: new UniqueEntityID('Wallet-1'),
         operation: TransactionOperation.INCOME,
         createdAt: new Date(2025, 9, 25),

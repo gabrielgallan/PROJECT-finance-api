@@ -25,14 +25,14 @@ describe('Open new member wallet use case', () => {
 
     const result = await sut.execute({
       memberId: 'member-1',
-      initialBalance: 250,
+      balance: 250,
     })
 
     expect(result.isRight()).toBe(true)
 
 
     if (result.isRight()) {
-      expect(result.value.wallet.balance).toBe(250)
+      expect(result.value.wallet.balance.toNumber()).toBe(250)
       expect(result.value.wallet.holderId.toString()).toBe('member-1')
     }
   })

@@ -1,10 +1,11 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Entity } from '@/core/entities/entity'
 import { Optional } from '@/core/types/optional'
+import { Cash } from './value-objects/cash'
 
 export interface WalletProps {
   holderId: UniqueEntityID
-  balance: number
+  balance: Cash
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -49,13 +50,13 @@ export class Wallet extends Entity<WalletProps> {
   }
 
   deposit(value: number) {
-    this.props.balance += value
+    this.props.balance = this.props.balance.add(Cash.fromAmount(value))
 
     this.touch()
   }
 
   withdraw(value: number) {
-    this.props.balance -= value
+    this.props.balance = this.props.balance.subtract(Cash.fromAmount(value))
 
     this.touch()
   }

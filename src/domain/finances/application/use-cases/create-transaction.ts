@@ -11,6 +11,7 @@ import { InvalidTransactionOperationError } from './errors/invalid-transaction-o
 import { CategoriesRepository } from '../repositories/categories-repository'
 import { Injectable } from '@nestjs/common'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 interface CreateTransactionUseCaseRequest {
   memberId: string
@@ -49,8 +50,6 @@ export class CreateTransactionUseCase {
       return left(new InvalidPositiveNumberError())
     }
 
-    const formattedAmount = Math.round(amount * 100) / 100
-
     const wallet = await this.walletsRepository.findByHolderId(memberId)
 
     if (!wallet) {
@@ -70,17 +69,19 @@ export class CreateTransactionUseCase {
 
     let transactionOperation: TransactionOperation
 
+    const amountCash = Cash.fromAmount(amount)
+
     switch (operation) {
       case 'expense':
         transactionOperation = TransactionOperation.EXPENSE
 
-        wallet.withdraw(formattedAmount)
+        wallet.withdraw(amountCash.toNumber())
 
         break
       case 'income':
         transactionOperation = TransactionOperation.INCOME
 
-        wallet.deposit(formattedAmount)
+        wallet.deposit(amountCash.toNumber())
 
         break
       default:
@@ -94,7 +95,7 @@ export class CreateTransactionUseCase {
       categoryId: categoryId ? new UniqueEntityID(categoryId) : undefined,
       title,
       description,
-      amount: formattedAmount,
+      amount: amountCash,
       operation: transactionOperation,
       method,
     })

@@ -4,6 +4,7 @@ import type { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ApiTags } from '@nestjs/swagger'
 import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/get-wallet-info'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { WalletPresenter } from '../../presenters/wallet-presenter'
 
 @ApiTags('Wallet')
 @Controller('/api')
@@ -33,6 +34,6 @@ export class GetWalletInfoController {
             }
         }
 
-        return result.value
+        return WalletPresenter.toHTTP(result.value.wallet)
     }
 }

@@ -1,5 +1,6 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Transaction, TransactionOperation, TransactionProps } from "@/domain/finances/enterprise/entities/transaction";
+import { Cash } from "@/domain/finances/enterprise/entities/value-objects/cash";
 import { faker } from "@faker-js/faker";
 
 export function makeTransaction(
@@ -7,9 +8,9 @@ export function makeTransaction(
     id?: UniqueEntityID
 ) {
     const transaction = Transaction.create({
-        accountId: new UniqueEntityID(),
+        walletId: new UniqueEntityID(),
         title: faker.lorem.words(2),
-        amount: faker.number.int({ min: 1, max: 99999 }),
+        amount: Cash.fromAmount(faker.number.int({ min: 1, max: 99999 })),
         operation: TransactionOperation.INCOME,
         ...override
     }, id)
