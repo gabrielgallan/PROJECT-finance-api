@@ -14,7 +14,9 @@ interface OpenWalletUseCaseRequest {
 }
 
 type OpenWalletUseCaseResponse = Either<
-  ResourceNotFoundError | MemberAlreadyHasWalletError,
+  | ResourceNotFoundError
+  | MemberAlreadyHasWalletError
+  | InvalidPositiveNumberError,
   { wallet: Wallet }
 >
 

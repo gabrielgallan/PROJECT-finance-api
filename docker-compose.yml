@@ -8,3 +8,9 @@ services:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
       - POSTGRESQL_DATABASE=smart_finance
+
+  redis:
+    container_name: smart-finance-redis
+    image: redis
+    ports:
+      - 6379:6379

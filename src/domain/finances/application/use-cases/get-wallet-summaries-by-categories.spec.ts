@@ -107,8 +107,8 @@ describe('Get wallet summaries by categories use case', () => {
     expect(result.isRight()).toBe(true)
 
     if (result.isRight()) {
-      expect(result.value.fromCategoriesSummaries).toHaveLength(2)
-      expect(result.value.fromCategoriesSummaries).toEqual(
+      expect(result.value.categoriesSummaries).toHaveLength(2)
+      expect(result.value.categoriesSummaries).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             categoryId: new UniqueEntityID('category-1'),

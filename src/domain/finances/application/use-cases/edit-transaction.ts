@@ -53,7 +53,7 @@ export class EditTransactionUseCase {
     }
 
     if (transaction.walletId.toString() !== wallet.id.toString()) {
-      return left(new NotAllowedError())
+      return left(new NotAllowedError('You are not allowed to edit this transaction'))
     }
 
     if (categoryId) {

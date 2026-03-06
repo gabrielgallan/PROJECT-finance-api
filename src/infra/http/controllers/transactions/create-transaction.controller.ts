@@ -8,6 +8,8 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { InvalidTransactionOperationError } from '@/domain/finances/application/use-cases/errors/invalid-transaction-operation-error';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
+import { CacheRepository } from '@/infra/cache/cache-repository';
+import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error';
 
 const createTransactionBodySchema = z.object({
     categoryId: z.string().uuid().optional(),
@@ -24,7 +26,8 @@ class CreateTransactionBodyDTO extends createZodDto(createTransactionBodySchema)
 @ApiTags('Transactions')
 export class CreateTransactionController {
     constructor(
-        private createTransaction: CreateTransactionUseCase
+        private createTransaction: CreateTransactionUseCase,
+        private cacheRepository: CacheRepository
     ) { }
 
     @Post('/wallet/transactions')
@@ -55,10 +58,15 @@ export class CreateTransactionController {
                 case InvalidTransactionOperationError:
                     throw new BadRequestException(error.message)
 
+                case InvalidPositiveNumberError:
+                    throw new BadRequestException(error.message)
+
                 default:
                     throw new InternalServerErrorException()
             }
         }
+
+        await this.cacheRepository.delete(`progress:year:${user.sub}`)
 
         return
     }

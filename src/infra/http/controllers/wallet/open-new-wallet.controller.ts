@@ -1,4 +1,4 @@
-import { Body, ConflictException, Controller, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common'
+import { BadRequestException, Body, ConflictException, Controller, InternalServerErrorException, NotFoundException, Post } from '@nestjs/common'
 import z from 'zod'
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
@@ -8,9 +8,10 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { MemberAlreadyHasWalletError } from '@/domain/finances/application/use-cases/errors/member-alredy-has-wallet-error'
 import { ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
+import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
 
 const openWalletBodySchema = z.object({
-  initialBalance: z.coerce.number().optional()
+  balance: z.coerce.number().optional()
 })
 
 class OpenWalletBodyDTO extends createZodDto(openWalletBodySchema) { }
@@ -27,11 +28,11 @@ export class OpenWalletController {
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(openWalletBodySchema)) body: OpenWalletBodyDTO
   ) {
-    const { initialBalance } = body
+    const { balance } = body
 
     const result = await this.openWallet.execute({
       memberId: user.sub,
-      initialBalance
+      balance
     })
 
     if (result.isLeft()) {
@@ -44,8 +45,11 @@ export class OpenWalletController {
         case MemberAlreadyHasWalletError:
           throw new ConflictException(error.message)
 
+        case InvalidPositiveNumberError:
+          throw new BadRequestException(error.message)
+
         default:
-          return new InternalServerErrorException()
+          throw new InternalServerErrorException()
       }
     }
 

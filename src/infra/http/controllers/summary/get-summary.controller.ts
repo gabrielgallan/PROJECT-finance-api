@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { BadRequestException, Controller, Get, InternalServerErrorException, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, InternalServerErrorException, NotFoundException, Query } from '@nestjs/common';
 import { GetWalletSummaryUseCase } from '@/domain/finances/application/use-cases/get-wallet-summary';
 import { z } from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
@@ -11,6 +11,7 @@ import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { InvalidPeriodError } from '@/domain/finances/application/use-cases/errors/invalid-period-error';
 import { WalletSummaryPresenter } from '../../presenters/wallet-summary-presenter';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 const getWalletSummaryQuerySchema = z.object({
     start: z.coerce.date(),
@@ -48,6 +49,9 @@ export class GetWalletSummaryController {
             switch (error.constructor) {
                 case InvalidPeriodError:
                     throw new BadRequestException(error.message)
+
+                case ResourceNotFoundError:
+                    throw new NotFoundException(error.message)
 
                 default:
                     throw new InternalServerErrorException()

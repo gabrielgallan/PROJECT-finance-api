@@ -3,7 +3,7 @@ import z from 'zod'
 
 export const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-    PORT: z.coerce.number().default(8000),
+    PORT: z.coerce.number().optional().default(8000),
     DATABASE_URL: z.string(),
     JWT_PRIVATE_KEY: z.string(),
     JWT_PUBLIC_KEY: z.string(),
@@ -14,7 +14,8 @@ export const envSchema = z.object({
     CLOUDINARY_CLOUD_NAME: z.string(),
     CLOUDINARY_API_KEY: z.string(),
     CLOUDINARY_API_SECRET: z.string(),
-    FRONTEND_BASE_URL: z.url()
+    FRONTEND_BASE_URL: z.url(),
+    REDIS_URL: z.url().optional().default('redis://127.0.0.1:6379/0'),
 })
 
 export type Env = z.infer<typeof envSchema>

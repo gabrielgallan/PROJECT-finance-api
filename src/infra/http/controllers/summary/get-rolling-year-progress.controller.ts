@@ -5,12 +5,14 @@ import { GetRollingYearProgressUseCase } from '@/domain/finances/application/use
 import { YearProgressPresenter } from '../../presenters/year-progress-presenter';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { CacheRepository } from '@/infra/cache/cache-repository';
 
 @Controller('/api')
 @ApiTags('Summaries')
 export class GetRollingYearProgressController {
     constructor(
-        private getRollingYearProgress: GetRollingYearProgressUseCase
+        private getRollingYearProgress: GetRollingYearProgressUseCase,
+        private cacheRepository: CacheRepository
     ) { }
 
     @Get('/wallet/summary/year')
@@ -18,6 +20,16 @@ export class GetRollingYearProgressController {
     async handle(
         @CurrentUser() user: UserPayload,
     ) {
+        const cacheKey = `progress:year:${user.sub}`
+
+        const cacheHit = await this.cacheRepository.get(cacheKey)
+
+        if (cacheHit) {
+            return {
+                progress: JSON.parse(cacheHit)
+            }
+        }
+
         const result = await this.getRollingYearProgress.execute({
             memberId: user.sub
         })
@@ -34,8 +46,12 @@ export class GetRollingYearProgressController {
             }
         }
 
+        const progress = YearProgressPresenter.toHTTP(result.value.progress)
+
+        await this.cacheRepository.set(cacheKey, JSON.stringify(progress))
+
         return {
-            progress: YearProgressPresenter.toHTTP(result.value.progress)
+            progress
         }
     }
 }
