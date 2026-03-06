@@ -7,4 +7,6 @@
 
 ## Priority 2
 
+- [ ] Cache de summary mensal
+
 ## Priority 3

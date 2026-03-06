@@ -5,8 +5,9 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { Public } from '@/infra/auth/public'
 import { ResetPasswordUseCase } from '@/domain/identity/application/use-cases/reset-password'
 import { InvalidTokenError } from '@/domain/identity/application/use-cases/errors/invalid-token-error'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 const bodySchema = z.object({
   code: z.string(),
@@ -26,6 +27,9 @@ export class ResetPasswordController {
   @Put('/profile/password')
   @HttpCode(204)
   @ApiOperation({ summary: 'reset user password' })
+  @ApiNoContentResponse({ description: 'Password reset successfully' })
+  @ApiNotFoundResponse({ type: ErrorResponseDto, description: 'Recovery code not found' })
+  @ApiBadRequestResponse({ type: ErrorResponseDto, description: 'Invalid recovery code' })
   async handle(
     @Body(new ZodValidationPipe(bodySchema)) body: ResetPassBodyDTO
   ) {

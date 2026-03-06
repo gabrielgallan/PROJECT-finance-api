@@ -13,12 +13,12 @@ import { InvalidPeriodError } from './errors/invalid-period-error'
 
 interface ListTransactionsFilters {
   categoryId?: string
-  interval?: DateInterval
+  interval: DateInterval
 }
 
 interface ListWalletTransactionsUseCaseRequest {
   memberId: string
-  filters?: ListTransactionsFilters
+  filters: ListTransactionsFilters
   limit?: number
   page?: number
 }
@@ -47,27 +47,14 @@ export class ListWalletTransactionsUseCase {
     limit = 10,
     page = 1,
   }: ListWalletTransactionsUseCaseRequest): Promise<ListWalletTransactionsUseCaseResponse> {
-    let interval: DateInterval
+    const startDateJs = dayjs(filters.interval.startDate)
+    const endDateJs = dayjs(filters.interval.endDate)
 
-    if (filters?.interval) {
-      const startDateJs = dayjs(filters.interval.startDate)
-      const endDateJs = dayjs(filters.interval.endDate)
-
-      if (endDateJs.isBefore(startDateJs)) {
-        return left(new InvalidPeriodError())
-      }
-
-      interval = filters.interval
-    } else {
-      const now = new Date()
-      const oneMonthAgo = new Date(now)
-      oneMonthAgo.setMonth(now.getMonth() - 1)
-
-      interval = {
-        startDate: oneMonthAgo,
-        endDate: now
-      }
+    if (endDateJs.isBefore(startDateJs)) {
+      return left(new InvalidPeriodError())
     }
+
+    const interval = filters.interval
 
     const pagination: Pagination = { limit, page }
 

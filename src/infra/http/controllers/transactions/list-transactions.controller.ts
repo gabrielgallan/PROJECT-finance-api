@@ -35,11 +35,21 @@ export class ListWalletTransactionsController {
     ) {
         const { categoryId, page, limit, start, end } = query
 
-        const interval: DateInterval | undefined = start && end ?
-            {
-                startDate: start,
-                endDate: end
-            } : undefined
+        let interval: DateInterval
+
+        if (start && end) {
+            interval = { startDate: start, endDate: end }
+        } else {
+            const now = new Date()
+            const oneMonthAgo = new Date()
+
+            oneMonthAgo.setMonth(now.getMonth() - 1)
+
+            interval = {
+                startDate: oneMonthAgo,
+                endDate: now
+            }
+        }
 
         const result = await this.listTransactions.execute({
             memberId: user.sub,

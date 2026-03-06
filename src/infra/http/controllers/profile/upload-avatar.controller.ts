@@ -4,7 +4,8 @@ import type { UserPayload } from '../../../auth/jwt.strategy'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadAvatarUseCase } from '@/domain/identity/application/use-cases/upload-avatar'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 @Controller('/api')
 @ApiTags('Profile')
@@ -16,6 +17,8 @@ export class UploadAvatarController {
     @Post('/profile/avatar')
     @UseInterceptors(FileInterceptor('file'))
     @ApiOperation({ summary: 'upload user avatar' })
+    @ApiCreatedResponse({ description: 'User avatar uploaded successfully' })
+    @ApiNotFoundResponse({ type: ErrorResponseDto, description: 'User not found error' })
     async handle(
         @CurrentUser() user: UserPayload,
         @UploadedFile(new ParseFilePipe({

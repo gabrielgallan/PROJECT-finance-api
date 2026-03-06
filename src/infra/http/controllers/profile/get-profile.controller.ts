@@ -3,8 +3,20 @@ import { CurrentUser } from '../../../auth/current-user-decorator'
 import type { UserPayload } from '../../../auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { GetProfileUseCase } from '@/domain/identity/application/use-cases/get-profile'
-import { UserPresenter } from '../../presenters/user-presenter'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { UserPresenter, UserPresenterToHTTP } from '../../presenters/user-presenter'
+import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger'
+
+class GetProfileResponseDTO implements UserPresenterToHTTP {
+
+  @ApiProperty()
+  name: string
+
+  @ApiProperty()
+  email: string
+
+  @ApiProperty()
+  avatarUrl: string | null
+}
 
 @Controller('/api')
 @ApiTags('Profile')
@@ -15,6 +27,8 @@ export class GetProfileController {
 
   @Get('/profile')
   @ApiOperation({ summary: 'get user profile' })
+  @ApiOkResponse({ description: 'User profile retrieved successfully', type: GetProfileResponseDTO })
+  @ApiNotFoundResponse({ description: 'User not found error' })
   async handle(
     @CurrentUser() user: UserPayload
   ) {

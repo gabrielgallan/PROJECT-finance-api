@@ -4,8 +4,9 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { Public } from '@/infra/auth/public'
 import { RegisterUseCase } from '@/domain/identity/application/use-cases/register'
 import { UserAlreadyExistsError } from '@/domain/identity/application/use-cases/errors/user-already-exists-error'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiConflictResponse, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 const registerBodySchema = z.object({
   name: z.string(),
@@ -25,6 +26,8 @@ export class RegisterController {
 
   @Post('/users')
   @ApiOperation({ summary: 'register new user' })
+  @ApiCreatedResponse({ description: 'User successfully registered' } )
+  @ApiConflictResponse({ type: ErrorResponseDto, description: 'User with the provided email already exists' })
   async handle(
     @Body(new ZodValidationPipe(registerBodySchema))
     body: RegisterBodyDTO
