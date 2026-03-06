@@ -48,6 +48,7 @@ import { AuthenticateWithProviderUseCase } from '@/domain/identity/application/u
 import { StorageModule } from '../storage/storage.module'
 import { UploadAvatarUseCase } from '@/domain/identity/application/use-cases/upload-avatar'
 import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/get-wallet-info'
+import { CacheModule } from '../cache/cache.module'
 
 @Module({
     imports: [
@@ -55,7 +56,8 @@ import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/ge
         DatabaseModule,
         EnvModule,
         EmailModule,
-        StorageModule
+        StorageModule,
+        CacheModule
     ],
     controllers: [
         RegisterController,

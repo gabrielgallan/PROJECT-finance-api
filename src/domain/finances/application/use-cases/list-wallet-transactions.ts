@@ -8,6 +8,8 @@ import { Pagination } from '@/core/types/repositories/pagination'
 import { DateInterval } from '@/core/types/repositories/date-interval'
 import { TransactionWithCategory } from '../../enterprise/entities/value-objects/transaction-with-category'
 import { Injectable } from '@nestjs/common'
+import dayjs from 'dayjs'
+import { InvalidPeriodError } from './errors/invalid-period-error'
 
 interface ListTransactionsFilters {
   categoryId?: string
@@ -22,7 +24,8 @@ interface ListWalletTransactionsUseCaseRequest {
 }
 
 type ListWalletTransactionsUseCaseResponse = Either<
-  | ResourceNotFoundError,
+  | ResourceNotFoundError
+  | InvalidPeriodError,
   {
     transactions: TransactionWithCategory[]
     interval: DateInterval
@@ -44,15 +47,26 @@ export class ListWalletTransactionsUseCase {
     limit = 10,
     page = 1,
   }: ListWalletTransactionsUseCaseRequest): Promise<ListWalletTransactionsUseCaseResponse> {
-    const now = new Date()
-    const oneMonthAgo = new Date(now)
+    let interval: DateInterval
 
-    oneMonthAgo.setMonth(now.getMonth() - 1)
+    if (filters?.interval) {
+      const startDateJs = dayjs(filters.interval.startDate)
+      const endDateJs = dayjs(filters.interval.endDate)
 
-    const interval: DateInterval = filters?.interval ??
-    {
-      startDate: oneMonthAgo,
-      endDate: now
+      if (endDateJs.isBefore(startDateJs)) {
+        return left(new InvalidPeriodError())
+      }
+
+      interval = filters.interval
+    } else {
+      const now = new Date()
+      const oneMonthAgo = new Date(now)
+      oneMonthAgo.setMonth(now.getMonth() - 1)
+
+      interval = {
+        startDate: oneMonthAgo,
+        endDate: now
+      }
     }
 
     const pagination: Pagination = { limit, page }

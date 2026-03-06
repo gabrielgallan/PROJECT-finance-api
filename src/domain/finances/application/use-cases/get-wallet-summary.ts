@@ -16,7 +16,7 @@ interface GetWalletSummaryUseCaseRequest {
 }
 
 type GetWalletSummaryUseCaseResponse = Either<
-  ResourceNotFoundError
+  | ResourceNotFoundError
   | InvalidPeriodError,
   {
     summary: WalletSummary

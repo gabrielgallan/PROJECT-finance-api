@@ -67,8 +67,6 @@ export class CategoryController {
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
 
-
-
                 case CategoryAlreadyExistsError:
                     throw new ConflictException(error.message)
 

@@ -37,7 +37,7 @@ describe('Open member wallet tests', () => {
       .post('/api/wallets')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        initialBalance: 400
+        balance: 400
       })
       .expect(201)
       .expect({})

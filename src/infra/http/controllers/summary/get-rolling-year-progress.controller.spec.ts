@@ -5,6 +5,8 @@ import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Encrypter } from '@/domain/identity/application/cryptography/encrypter'
 import { Wallet } from '@prisma/client'
+import { RedisCacheRepositoryMock } from 'test/e2e/mocks/redis-cache-repository-mock'
+import { CacheRepository } from '@/infra/cache/cache-repository'
 
 describe('Get rolling year wallet summaries tests', () => {
     let app: INestApplication
@@ -17,7 +19,10 @@ describe('Get rolling year wallet summaries tests', () => {
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [AppModule],
-        }).compile()
+        })
+            .overrideProvider(CacheRepository)
+            .useClass(RedisCacheRepositoryMock)
+            .compile()
 
         app = moduleRef.createNestApplication()
 

@@ -25,7 +25,8 @@ interface CreateTransactionUseCaseRequest {
 
 type CreateTransactionUseCaseResponse = Either<
   | ResourceNotFoundError
-  | InvalidTransactionOperationError,
+  | InvalidTransactionOperationError
+  | InvalidPositiveNumberError,
   { transaction: Transaction }
 >
 

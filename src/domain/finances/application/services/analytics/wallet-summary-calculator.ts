@@ -3,6 +3,7 @@ import { WalletSummary } from "@/domain/finances/enterprise/entities/value-objec
 import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
 import { DateInterval } from "@/core/types/repositories/date-interval";
 import { calculateTransactionsTotals } from "../../utils/calculate-transactions-totals";
+import { Cash } from "@/domain/finances/enterprise/entities/value-objects/cash";
 
 export interface WalletSummaryCalculatorInput {
     walletId: UniqueEntityID
@@ -23,13 +24,15 @@ export class WalletSummaryCalculator {
             categoryId: input.categoryId,
             interval: input.interval,
             totals: {
-                income: totalIncome,
-                expense: totalExpense
+                income: Cash.fromAmount(totalIncome).toNumber(),
+                expense: Cash.fromAmount(totalExpense).toNumber()
             },
             counts: {
                 transactions: input.transactions.length
             },
-            netBalance: totalIncome - totalExpense
+            netBalance: Cash.fromAmount(totalIncome)
+                .subtract(Cash.fromAmount(totalExpense))
+                .toNumber()
         })
     }
 }

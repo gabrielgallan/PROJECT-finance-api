@@ -1,4 +1,4 @@
-import { Controller, Get, InternalServerErrorException, NotFoundException, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, InternalServerErrorException, NotFoundException, Query } from '@nestjs/common';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
@@ -8,6 +8,7 @@ import z from 'zod';
 import { DateInterval } from '@/core/types/repositories/date-interval';
 import { TransactionPresenter } from '../../presenters/transaction-presenter';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { InvalidPeriodError } from '@/domain/finances/application/use-cases/errors/invalid-period-error';
 
 const listQuerySchema = z.object({
     categoryId: z.string().uuid().optional(),
@@ -56,6 +57,9 @@ export class ListWalletTransactionsController {
             switch (error.constructor) {
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
+
+                case InvalidPeriodError:
+                    throw new BadRequestException(error.message)
 
                 default:
                     throw new InternalServerErrorException()

@@ -3,7 +3,6 @@ import { Either, left, right } from '@/core/types/either'
 import { WalletsRepository } from '../repositories/wallets-repository'
 import { TransactionsRepository } from '../repositories/transactions-repository'
 import { CategoriesRepository } from '../repositories/categories-repository'
-import { AnyCategoryFoundForWalletError } from './errors/any-category-found-for-wallet-error'
 import { WalletSummary } from '../../enterprise/entities/value-objects/wallet-summary'
 import { DateInterval } from '@/core/types/repositories/date-interval'
 import { FinancialAnalyticsService } from '../services/analytics/financial-analytics-service'
@@ -15,11 +14,10 @@ interface GetWalletSummariesByCategoriesUseCaseRequest {
 }
 
 type GetWalletSummariesByCategoriesUseCaseResponse = Either<
-  | ResourceNotFoundError
-  | AnyCategoryFoundForWalletError,
+  | ResourceNotFoundError,
   {
-    fullTermAccounSummary: WalletSummary
-    fromCategoriesSummaries: WalletSummary[]
+    summary: WalletSummary
+    categoriesSummaries: WalletSummary[]
   }
 >
 
@@ -46,10 +44,6 @@ export class GetWalletSummariesByCategoriesUseCase {
       wallet.id.toString(),
     )
 
-    // if (categories.length === 0) {
-    //   return left(new AnyCategoryFoundForWalletError())
-    // }
-
     const transactions = await this.transactionsRepository.findManyByQuery({
       walletId: wallet.id.toString(),
       interval
@@ -63,8 +57,8 @@ export class GetWalletSummariesByCategoriesUseCase {
     })
 
     return right({
-      fullTermAccounSummary: result.totalSummary,
-      fromCategoriesSummaries: result.partsSummaries,
+      summary: result.totalSummary,
+      categoriesSummaries: result.partsSummaries,
     })
   }
 }

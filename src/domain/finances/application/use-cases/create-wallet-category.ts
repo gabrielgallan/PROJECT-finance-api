@@ -14,7 +14,7 @@ interface CreateWalletCategoryUseCaseRequest {
 }
 
 type CreateWalletCategoryUseCaseResponse = Either<
-  ResourceNotFoundError
+  | ResourceNotFoundError
   | CategoryAlreadyExistsError,
   {
     category: Category

@@ -1,4 +1,5 @@
 import 'dotenv/config'
+
 import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { execSync } from 'child_process'
@@ -19,7 +20,7 @@ function generateUniqueDatabaseURL(schemaId: string) {
 
 const schemaId = randomUUID()
 
-beforeAll(() => {
+beforeAll(async () => {
     const databaseURL = generateUniqueDatabaseURL(schemaId)
 
     process.env.DATABASE_URL = databaseURL

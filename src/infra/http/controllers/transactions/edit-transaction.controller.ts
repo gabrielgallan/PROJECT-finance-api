@@ -58,7 +58,7 @@ export class EditWalletTransactionController {
                     throw new NotFoundException(error.message)
 
                 case NotAllowedError:
-                    throw new UnauthorizedException(`This transaction doesn't belong to your wallet`)
+                    throw new UnauthorizedException(error.message)
 
                 default:
                     throw new InternalServerErrorException()

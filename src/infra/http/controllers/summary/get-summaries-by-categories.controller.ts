@@ -9,7 +9,6 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { WalletSummaryPresenter } from '../../presenters/wallet-summary-presenter';
 import { GetWalletSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-wallet-summaries-by-categories';
-import { AnyCategoryFoundForWalletError } from '@/domain/finances/application/use-cases/errors/any-category-found-for-wallet-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -47,9 +46,6 @@ export class GetSummariesByCategoriesController {
             const error = result.value
 
             switch (error.constructor) {
-                case AnyCategoryFoundForWalletError:
-                    throw new NotFoundException(error.message)
-
                 case ResourceNotFoundError:
                     throw new NotFoundException(error.message)
 
@@ -59,9 +55,9 @@ export class GetSummariesByCategoriesController {
         }
 
         return {
-            total: WalletSummaryPresenter.toHTTP(result.value.fullTermAccounSummary),
+            total: WalletSummaryPresenter.toHTTP(result.value.summary),
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            categories: result.value.fromCategoriesSummaries.map(WalletSummaryPresenter.toHTTP)
+            categories: result.value.categoriesSummaries.map(WalletSummaryPresenter.toHTTP)
         }
     }
 }

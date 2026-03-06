@@ -1,7 +1,5 @@
-import { UseCaseError } from '@/core/types/errors/use-case-error'
-
-export class NotAllowedError extends Error implements UseCaseError {
-  constructor() {
-    super('Not allowed error')
+export class NotAllowedError extends Error {
+  constructor(message?: string) {
+    super(message || 'Not allowed error')
   }
 }
