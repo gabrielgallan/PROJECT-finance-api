@@ -3,6 +3,7 @@ import { ValueObject } from '@/core/entities/value-object'
 import { Cash } from './cash'
 
 export interface TransactionWithCategoryProps {
+  transactionId: string
   title: string
   amount: Cash
   operation: 'income' | 'expense'
@@ -25,6 +26,10 @@ export class TransactionWithCategory extends ValueObject<TransactionWithCategory
         category: props.category ?? null
       },
     )
+  }
+
+  get id(){
+    return this.props.transactionId
   }
 
   get title() {

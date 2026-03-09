@@ -9,6 +9,15 @@ export interface GetLastTwelveMonthsResponse {
   }[]
 }
 
+export interface GetCurrentMonthWeeksResponse {
+  month: number
+  year: number
+  weeks: {
+    week: number
+    interval: DateInterval
+  }[]
+}
+
 export class DateRangeConstructor {
   static getLastTwelveMonths(): GetLastTwelveMonthsResponse {
     const months: GetLastTwelveMonthsResponse['months'] = []
@@ -30,5 +39,38 @@ export class DateRangeConstructor {
     }
 
     return { months }
+  }
+
+  static getCurrentMonthWeeks(): GetCurrentMonthWeeksResponse {
+    const weeks: GetCurrentMonthWeeksResponse['weeks'] = []
+
+    const startOfMonth = dayjs().startOf('month')
+    const startOfNextMonth = startOfMonth.add(1, 'month')
+
+    let currentStart = startOfMonth
+    let week = 1
+
+    while (currentStart.isBefore(startOfNextMonth)) {
+      const nextStart = currentStart.add(7, 'day')
+
+      weeks.push({
+        week,
+        interval: {
+          startDate: currentStart.toDate(),
+          endDate: nextStart.isAfter(startOfNextMonth)
+            ? startOfNextMonth.toDate()
+            : nextStart.toDate(),
+        },
+      })
+
+      currentStart = nextStart
+      week++
+    }
+
+    return {
+      month: startOfMonth.month(),
+      year: startOfMonth.year(),
+      weeks,
+    }
   }
 }

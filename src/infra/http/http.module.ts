@@ -49,6 +49,8 @@ import { StorageModule } from '../storage/storage.module'
 import { UploadAvatarUseCase } from '@/domain/identity/application/use-cases/upload-avatar'
 import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/get-wallet-info'
 import { CacheModule } from '../cache/cache.module'
+import { GetCurrentMonthProgressController } from './controllers/summary/get-current-month-progress.controller'
+import { GetGetCurrentMonthProgressUseCase } from '@/domain/finances/application/use-cases/get-current-month-progress'
 
 @Module({
     imports: [
@@ -75,7 +77,8 @@ import { CacheModule } from '../cache/cache.module'
         GetWalletSummaryController,
         GetSummariesByCategoriesController,
         GetRollingYearProgressController,
-        GetWalletInfoController
+        GetWalletInfoController,
+        GetCurrentMonthProgressController
     ],
     providers: [
         RegisterUseCase,
@@ -96,7 +99,8 @@ import { CacheModule } from '../cache/cache.module'
         GetWalletSummariesByCategoriesUseCase,
         GetRollingYearProgressUseCase,
         FinancialAnalyticsService,
-        GetWalletInfoUseCase
+        GetWalletInfoUseCase,
+        GetGetCurrentMonthProgressUseCase
     ]
 })
 export class HttpModule { }

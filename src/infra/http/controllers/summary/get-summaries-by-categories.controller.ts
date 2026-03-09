@@ -10,7 +10,7 @@ import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { WalletSummaryPresenter } from '../../presenters/wallet-summary-presenter';
 import { GetWalletSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-wallet-summaries-by-categories';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 const querySchema = z.object({
     start: z.coerce.date(),
@@ -28,6 +28,8 @@ export class GetSummariesByCategoriesController {
 
     @Get('/wallet/categories/summary')
     @ApiOperation({ summary: 'get wallet summaries grouped by categories for a given period' })
+    @ApiOkResponse({ description: 'Wallet summaries retrieved successfully' })
+    @ApiNotFoundResponse({ description: 'User not found error' })
     async handle(
         @CurrentUser() user: UserPayload,
         @Query(new ZodValidationPipe(querySchema)) query: GetSummariesByCategoriesQueryDTO

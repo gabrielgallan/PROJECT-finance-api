@@ -86,6 +86,7 @@ export class ListWalletTransactionsUseCase {
 
     const details = transactions.map(transaction => {
       return TransactionWithCategory.create({
+        transactionId: transaction.id.toString(),
         title: transaction.title,
         amount: transaction.amount,
         operation: transaction.operation,

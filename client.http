@@ -50,8 +50,8 @@ PUT {{baseUrl}}/api/profile/password
 Content-Type: application/json
 
 {
-    "code": "3f5fbeee-aa84-4605-a52d-ff4673053b81",
-    "password": "gab123"
+    "code": "",
+    "password": ""
 }
 
 ###
@@ -69,7 +69,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "initialBalance": 50
+    "initialBalance": 0
 }
 
 ###
@@ -80,7 +80,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "name": "Uber"
+    "name": ""
 }
 
 ###
@@ -98,7 +98,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "description": "my ifood expenses"
+    "description": ""
 }
 
 ###
@@ -140,5 +140,12 @@ Authorization: Bearer {{authToken}}
 
 # @name get_wallet_info
 GET {{baseUrl}}/api/wallet
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name get_current_month_progress
+GET {{baseUrl}}/api/wallet/summary/month
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
