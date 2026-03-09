@@ -10,7 +10,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { InvalidPeriodError } from '@/domain/finances/application/use-cases/errors/invalid-period-error';
 import { WalletSummaryPresenter } from '../../presenters/wallet-summary-presenter';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 const getWalletSummaryQuerySchema = z.object({
@@ -29,6 +29,8 @@ export class GetWalletSummaryController {
 
     @Get('/wallet/summary')
     @ApiOperation({ summary: 'get wallet summary for a given period' })
+    @ApiOkResponse({ description: 'Wallet summary retrieved successfully' })
+    @ApiNotFoundResponse({ description: 'User not found error' })
     async handle(
         @CurrentUser() user: UserPayload,
         @Query(new ZodValidationPipe(getWalletSummaryQuerySchema)) query: GetWalletSummaryQueryDTO

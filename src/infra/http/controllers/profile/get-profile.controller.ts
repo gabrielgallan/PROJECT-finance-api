@@ -4,7 +4,17 @@ import type { UserPayload } from '../../../auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { GetProfileUseCase } from '@/domain/identity/application/use-cases/get-profile'
 import { UserPresenter } from '../../presenters/user-presenter'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { createZodDto } from 'nestjs-zod'
+import z from 'zod'
+
+class GetProfileResponseDTO extends createZodDto(z.object({
+    user: z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string()
+    })
+})) {}
 
 @Controller('/api')
 @ApiTags('Profile')
@@ -15,6 +25,8 @@ export class GetProfileController {
 
   @Get('/profile')
   @ApiOperation({ summary: 'get user profile' })
+  @ApiOkResponse({ description: 'User profile retrieved successfully', type: GetProfileResponseDTO })
+  @ApiNotFoundResponse({ description: 'User not found error' })
   async handle(
     @CurrentUser() user: UserPayload
   ) {

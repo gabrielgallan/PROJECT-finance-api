@@ -3,9 +3,11 @@ import z from 'zod'
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { Public } from '@/infra/auth/public'
 import { AuthenticateWithProviderUseCase } from '@/domain/identity/application/use-cases/authenticate-with-provider'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBadGatewayResponse, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
 import { AccountProvider } from '@prisma/client'
+import { ErrorResponseDto } from '../../errors/api-error-response'
+import { AuthenticateResponseDTO } from './authenticate.controller'
 
 const bodySchema = z.object({
     code: z.string()
@@ -23,6 +25,8 @@ export class AuthenticateWithGithubController {
 
     @Post('/sessions/github')
     @ApiOperation({ summary: 'authenticate with github' })
+    @ApiCreatedResponse({ description: 'Authenticated successfully', type: AuthenticateResponseDTO })
+    @ApiBadGatewayResponse({ type: ErrorResponseDto,  description: 'Failed to authenticate with GitHub' })
     async handle(
         @Body(new ZodValidationPipe(bodySchema)) body: AuthenticateWithGithubBodyDTO
     ) {

@@ -1,28 +1,28 @@
 import { Controller, Get, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
-import { GetRollingYearProgressUseCase } from '@/domain/finances/application/use-cases/get-rolling-yearly-progress';
-import { YearProgressPresenter } from '../../presenters/year-progress-presenter';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { CacheRepository } from '@/infra/cache/cache-repository';
+import { GetGetCurrentMonthProgressUseCase } from '@/domain/finances/application/use-cases/get-current-month-progress';
+import { MonthProgressPresenter } from '../../presenters/month-progress-presenter';
 
 @Controller('/api')
 @ApiTags('Summaries')
-export class GetRollingYearProgressController {
+export class GetCurrentMonthProgressController {
     constructor(
-        private getRollingYearProgress: GetRollingYearProgressUseCase,
+        private getCurrentMonthProgress: GetGetCurrentMonthProgressUseCase,
         private cacheRepository: CacheRepository
     ) { }
 
-    @Get('/wallet/summary/year')
-    @ApiOperation({ summary: 'get rolling year progress' })
-    @ApiOkResponse({ description: 'Rolling year progress retrieved successfully' })
+    @Get('/wallet/summary/month')
+    @ApiOperation({ summary: 'get current month progress' })
+    @ApiOkResponse({ description: 'Current month progress retrieved successfully' })
     @ApiNotFoundResponse({ description: 'User not found error' })
     async handle(
         @CurrentUser() user: UserPayload,
     ) {
-        const cacheKey = `progress:year:${user.sub}`
+        const cacheKey = `progress:month:${user.sub}`
 
         const cacheHit = await this.cacheRepository.get(cacheKey)
 
@@ -32,7 +32,7 @@ export class GetRollingYearProgressController {
             }
         }
 
-        const result = await this.getRollingYearProgress.execute({
+        const result = await this.getCurrentMonthProgress.execute({
             memberId: user.sub
         })
 
@@ -48,7 +48,7 @@ export class GetRollingYearProgressController {
             }
         }
 
-        const progress = YearProgressPresenter.toHTTP(result.value.progress)
+        const progress = MonthProgressPresenter.toHTTP(result.value.progress)
 
         await this.cacheRepository.set(cacheKey, JSON.stringify(progress))
 

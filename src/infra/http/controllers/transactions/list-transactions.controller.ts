@@ -7,7 +7,7 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import z from 'zod';
 import { DateInterval } from '@/core/types/repositories/date-interval';
 import { TransactionPresenter } from '../../presenters/transaction-presenter';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { InvalidPeriodError } from '@/domain/finances/application/use-cases/errors/invalid-period-error';
 
 const listQuerySchema = z.object({
@@ -29,17 +29,30 @@ export class ListWalletTransactionsController {
 
     @Get('/wallet/transactions')
     @ApiOperation({ summary: 'list wallet transactions with pagination and optional filters' })
+    @ApiOkResponse({ description: 'Transactions listed successfully' })
+    @ApiNotFoundResponse({ description: 'User not found error' })
+    @ApiBadRequestResponse({ description: 'Invalid period error' })
     async handle(
         @CurrentUser() user: UserPayload,
         @Query(new ZodValidationPipe(listQuerySchema)) query: ListQueryDTO
     ) {
         const { categoryId, page, limit, start, end } = query
 
-        const interval: DateInterval | undefined = start && end ?
-            {
-                startDate: start,
-                endDate: end
-            } : undefined
+        let interval: DateInterval
+
+        if (start && end) {
+            interval = { startDate: start, endDate: end }
+        } else {
+            const now = new Date()
+            const oneMonthAgo = new Date()
+
+            oneMonthAgo.setMonth(now.getMonth() - 1)
+
+            interval = {
+                startDate: oneMonthAgo,
+                endDate: now
+            }
+        }
 
         const result = await this.listTransactions.execute({
             memberId: user.sub,

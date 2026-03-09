@@ -1,6 +1,7 @@
 import { TransactionWithCategory } from "@/domain/finances/enterprise/entities/value-objects/transaction-with-category";
 
 export interface TransactionPresenterToHTTP {
+    id: string
     title: string
     amount: number
     operation: string
@@ -17,6 +18,7 @@ export class TransactionPresenter {
         transaction: TransactionWithCategory
     ): TransactionPresenterToHTTP {
         return {
+            id: transaction.id.toString(),
             title: transaction.title,
             amount: transaction.amount.toNumber(),
             operation: transaction.operation,

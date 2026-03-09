@@ -4,8 +4,9 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { AuthenticateUseCase } from '@/domain/identity/application/use-cases/authenticate'
 import { InvalidCredentialsError } from '@/domain/identity/application/use-cases/errors/invalid-credentials-error'
 import { Public } from '@/infra/auth/public'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -13,6 +14,8 @@ const authenticateBodySchema = z.object({
 })
 
 class AuthenticateBodyDTO extends createZodDto(authenticateBodySchema) { }
+
+export class AuthenticateResponseDTO extends createZodDto(z.object({ token: z.string() })) {}
 
 @Controller('/api')
 @Public()
@@ -24,6 +27,9 @@ export class AuthenticateController {
 
   @Post('/sessions')
   @ApiOperation({ summary: 'authenticate with credentials' })
+  @ApiCreatedResponse({ description: 'Authenticated successfully', type: AuthenticateResponseDTO })
+  @ApiBadRequestResponse({ type: ErrorResponseDto, description: 'Invalid credentials' })
+  @ApiBadRequestResponse({ type: ErrorResponseDto, description: 'Invalid credentials' })
   async handle(
     @Body(new ZodValidationPipe(authenticateBodySchema)) body: AuthenticateBodyDTO
   ) {

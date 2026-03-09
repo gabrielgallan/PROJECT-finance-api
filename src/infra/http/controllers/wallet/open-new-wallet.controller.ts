@@ -6,7 +6,7 @@ import type { UserPayload } from '@/infra/auth/jwt.strategy'
 import { OpenWalletUseCase } from '@/domain/finances/application/use-cases/open-new-wallet'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { MemberAlreadyHasWalletError } from '@/domain/finances/application/use-cases/errors/member-alredy-has-wallet-error'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
 
@@ -24,6 +24,11 @@ export class OpenWalletController {
   ) { }
 
   @Post('/wallets')
+  @ApiOperation({ summary: 'Open a new wallet' })
+  @ApiCreatedResponse({ description: 'Wallet opened successfully' })
+  @ApiNotFoundResponse({ description: 'User not found error' })
+  @ApiConflictResponse({ description: 'Member already has a wallet error' })
+  @ApiBadRequestResponse({ description: 'Invalid balance error' })
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(openWalletBodySchema)) body: OpenWalletBodyDTO

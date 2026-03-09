@@ -1,10 +1,12 @@
 import { Controller, Get, HttpCode, InternalServerErrorException, NotFoundException } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import type { UserPayload } from '@/infra/auth/jwt.strategy'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/get-wallet-info'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { WalletPresenter } from '../../presenters/wallet-presenter'
+
+
 
 @ApiTags('Wallet')
 @Controller('/api')
@@ -15,6 +17,9 @@ export class GetWalletInfoController {
 
     @Get('/wallet')
     @HttpCode(200)
+    @ApiOperation({ summary: 'get wallet info' })
+    @ApiOkResponse({ description: 'Wallet info retrieved successfully' })
+    @ApiNotFoundResponse({ description: 'User not found error' })
     async handle(
         @CurrentUser() user: UserPayload,
     ) {

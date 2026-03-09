@@ -6,7 +6,7 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import z from 'zod';
 import { EditTransactionUseCase } from '@/domain/finances/application/use-cases/edit-transaction';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
 
 const editTransactionBodySchema = z.object({
@@ -33,6 +33,9 @@ export class EditWalletTransactionController {
     @Put('/wallet/transactions/:id')
     @HttpCode(204)
     @ApiOperation({ summary: 'edit a transaction' })
+    @ApiOkResponse({ description: 'Transaction edited successfully' })
+    @ApiNotFoundResponse({ description: 'Transaction not found' })
+    @ApiUnauthorizedResponse({ description: 'User not authorized to edit this transaction' })
     async handle(
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(editTransactionBodySchema)) body: EditTransactionBodyDTO,

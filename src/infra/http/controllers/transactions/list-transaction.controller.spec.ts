@@ -121,7 +121,7 @@ describe('List transaction tests', () => {
             .get('/api/wallet/transactions')
             .set('Authorization', `Bearer ${token}`)
             .query({
-                categoryId: uuids[0]
+                categoryId: uuids[0],
             })
             .expect(200)
 

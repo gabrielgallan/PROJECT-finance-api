@@ -13,8 +13,10 @@ import { CategoryAlreadyExistsError } from '@/domain/finances/application/use-ca
 import { ListWalletCategoriesUseCase } from '@/domain/finances/application/use-cases/list-wallet-categories';
 import { CategoryPresenter } from '../../presenters/category-presenter';
 import { EditWalletCategoryUseCase } from '@/domain/finances/application/use-cases/edit-wallet-category';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
+import { GetCategoriesResponseDTO } from './dto/responses/create-category-response.dto';
+import { ErrorResponseDto } from '../../errors/api-error-response';
 
 const createCategoryBodySchema = z.object({
     name: z.string(),
@@ -47,6 +49,9 @@ export class CategoryController {
 
     @Post()
     @ApiOperation({ summary: 'create a new wallet category' })
+    @ApiCreatedResponse({ description: 'The category has been successfully created' })
+    @ApiNotFoundResponse({ description: 'No wallet categories found', type: ErrorResponseDto })
+    @ApiConflictResponse({ description: 'Category with the same name already exists', type: ErrorResponseDto })
     async create(
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(createCategoryBodySchema)) body: CreateCategoryBodyDTO
@@ -80,6 +85,8 @@ export class CategoryController {
 
     @Get()
     @ApiOperation({ summary: 'list all wallet categories' })
+    @ApiOkResponse({ description: 'List of wallet categories', type: GetCategoriesResponseDTO })
+    @ApiNotFoundResponse({ description: 'No wallet categories found', type: ErrorResponseDto })
     async list(
         @CurrentUser() user: UserPayload,
     ) {
@@ -88,7 +95,16 @@ export class CategoryController {
         })
 
         if (result.isLeft()) {
-            throw new InternalServerErrorException()
+            const error = result.value
+            
+            switch (error.constructor) {
+                case ResourceNotFoundError:
+                    throw new NotFoundException(error.message)
+
+                default:
+                    throw new InternalServerErrorException()
+
+            }
         }
 
         return {
@@ -99,6 +115,9 @@ export class CategoryController {
 
     @Put('/:slug')
     @HttpCode(204)
+    @ApiOkResponse({ description: 'The category has been successfully updated' })
+    @ApiNotFoundResponse({ description: 'Category not found', type: ErrorResponseDto })
+    @ApiConflictResponse({ description: 'Category with the same name already exists', type: ErrorResponseDto })
     @ApiOperation({ summary: 'edit an wallet category' })
     async edit(
         @CurrentUser() user: UserPayload,

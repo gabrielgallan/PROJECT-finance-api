@@ -4,8 +4,9 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 import { Public } from '@/infra/auth/public'
 import { RequestPasswordRecoverUseCase } from '@/domain/identity/application/use-cases/request-password-recover'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 const bodySchema = z.object({
   email: z.string().email()
@@ -23,6 +24,8 @@ export class RequestPasswordRecoverController {
 
   @Post('/password/recover')
   @ApiOperation({ summary: 'request password recover' })
+  @ApiCreatedResponse({ description: 'Password recover requested successfully' })
+  @ApiNotFoundResponse({ type: ErrorResponseDto, description: 'No user found with the provided email' })
   async handle(
     @Body(new ZodValidationPipe(bodySchema)) body: RequestPasswordRecoverBodyDTO
   ) {

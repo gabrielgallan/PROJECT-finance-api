@@ -6,7 +6,7 @@ import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { InvalidTransactionOperationError } from '@/domain/finances/application/use-cases/errors/invalid-transaction-operation-error';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
 import { CacheRepository } from '@/infra/cache/cache-repository';
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error';
@@ -32,6 +32,9 @@ export class CreateTransactionController {
 
     @Post('/wallet/transactions')
     @ApiOperation({ summary: 'create a new transaction' })
+    @ApiOkResponse({ description: 'Transaction created successfully' })
+    @ApiNotFoundResponse({ description: 'User not found error' })
+    @ApiBadRequestResponse({ description: 'Invalid transaction data' })
     async handle(
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(createTransactionBodySchema)) body: CreateTransactionBodyDTO
@@ -67,6 +70,7 @@ export class CreateTransactionController {
         }
 
         await this.cacheRepository.delete(`progress:year:${user.sub}`)
+        await this.cacheRepository.delete(`progress:month:${user.sub}`)
 
         return
     }

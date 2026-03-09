@@ -4,11 +4,18 @@ import Redis from "ioredis";
 
 @Injectable()
 export class RedisService extends Redis implements OnModuleDestroy {
-    constructor(env: EnvService) {
-        super(env.get('REDIS_URL'))
-    }
+  constructor(env: EnvService) {
+    super(env.get('REDIS_URL'), {
+      maxRetriesPerRequest: 3,
+      enableReadyCheck: true
+    });
 
-    onModuleDestroy() {
-        return this.disconnect()
-    }
+    this.on("error", (err) => {
+      console.error("Redis error:", err);
+    });
+  }
+
+  onModuleDestroy() {
+    this.disconnect();
+  }
 }
