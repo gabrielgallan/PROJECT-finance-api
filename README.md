@@ -29,9 +29,10 @@ It defines how users authenticate within the system, supports authentication wit
 
 ### Integrations
 
-- Resend (email services)
-- Cloudinary (storage services)
-- Github OAuth (github auth provider)
+- Resend | Email Services
+- Cloudinary | Storage
+- PostgreSQL | Database
+- Redis | Cache
 
 ### Security
 
@@ -65,13 +66,19 @@ git clone
 pnpm i
 ```
 
-3. Create and configure .env based on .env.example
-4. Run prisma migrations
+3. Create docker container with the services
+```bash
+docker compose up -d
+```
+
+4. Create and configure .env based on .env.example
+
+5. Run prisma migrations
 ```bash
 pnpm prisma migrate dev --name <name>
 ```
 
-5. Start server
+6. Start server
 ```bash
 pnpm start:dev
 ```
