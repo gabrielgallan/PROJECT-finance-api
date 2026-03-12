@@ -1,0 +1,15 @@
+name: Keep Render App Alive
+
+on:
+  schedule:
+    # a cada 10 minutos
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Health Endpoint
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" ${{ secrets.RENDER_APP_URL }}/api/health
