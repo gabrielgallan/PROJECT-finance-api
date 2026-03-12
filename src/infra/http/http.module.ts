@@ -51,6 +51,7 @@ import { GetWalletInfoUseCase } from '@/domain/finances/application/use-cases/ge
 import { CacheModule } from '../cache/cache.module'
 import { GetCurrentMonthProgressController } from './controllers/summary/get-current-month-progress.controller'
 import { GetGetCurrentMonthProgressUseCase } from '@/domain/finances/application/use-cases/get-current-month-progress'
+import { HealthController } from './controllers/server/health.controller'
 
 @Module({
     imports: [
@@ -62,6 +63,7 @@ import { GetGetCurrentMonthProgressUseCase } from '@/domain/finances/application
         CacheModule
     ],
     controllers: [
+        HealthController,
         RegisterController,
         AuthenticateController,
         AuthenticateWithGithubController,
