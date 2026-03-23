@@ -29,7 +29,7 @@ const editCategoryBodySchema = z.object({
 })
 
 const editCategoryParamsSchema = z.object({
-    slug: z.string()
+    id: z.uuid()
 })
 
 class CreateCategoryBodyDTO extends createZodDto(createCategoryBodySchema) { }
@@ -56,7 +56,6 @@ export class CategoryController {
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(createCategoryBodySchema)) body: CreateCategoryBodyDTO
     ) {
-        console.log(body)
         const { name, description } = body
 
         const result = await this.createCategory.execute({
@@ -113,7 +112,7 @@ export class CategoryController {
         }
     }
 
-    @Put('/:slug')
+    @Put('/:id')
     @HttpCode(204)
     @ApiOkResponse({ description: 'The category has been successfully updated' })
     @ApiNotFoundResponse({ description: 'Category not found', type: ErrorResponseDto })
@@ -125,11 +124,11 @@ export class CategoryController {
         @Param(new ZodValidationPipe(editCategoryParamsSchema)) params: EditCategoryParamsDTO
     ) {
         const { name, description } = body
-        const { slug } = params
+        const { id } = params
 
         const result = await this.editCategory.execute({
             memberId: user.sub,
-            slug,
+            categoryId: id,
             name,
             description
         })
