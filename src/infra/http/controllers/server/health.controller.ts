@@ -18,15 +18,15 @@ export class HealthController {
     @Get('/health')
     @ApiOperation({ summary: 'get health status' })
     @ApiOkResponse({ description: 'Health status retrieved successfully', type: HealthResponseDTO })
-    async handle() {
+    async health() {
         return {
             ok: true,
             timestamp: new Date().toISOString()
         }
     }
 
-    @Get('/health/error')
-    async throwUnhandledError() {
+    @Get('/debug')
+    async debug() {
         throw new Error('Unhandled error')
     }
 }
