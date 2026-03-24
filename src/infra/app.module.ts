@@ -5,6 +5,7 @@ import { envSchema } from './env/env'
 import { AuthModule } from './auth/auth.module'
 import { EnvModule } from './env/env.module';
 import { SecurityModule } from './security/security.module';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 @Module({
   imports: [
@@ -12,10 +13,11 @@ import { SecurityModule } from './security/security.module';
     AuthModule,
     HttpModule,
     SecurityModule,
+    MonitoringModule,
     ConfigModule.forRoot({
       validate: env => envSchema.parse(env),
       isGlobal: true
-    })
+    }),
   ]
 })
 export class AppModule { }

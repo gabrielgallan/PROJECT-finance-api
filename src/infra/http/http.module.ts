@@ -4,6 +4,7 @@ https://docs.nestjs.com/modules
 
 // modules
 import { Module } from '@nestjs/common'
+import { APP_FILTER } from '@nestjs/core'
 import { AuthModule } from '../auth/auth.module'
 import { DatabaseModule } from '../database/database.module'
 
@@ -52,6 +53,7 @@ import { CacheModule } from '../cache/cache.module'
 import { GetCurrentMonthProgressController } from './controllers/summary/get-current-month-progress.controller'
 import { GetGetCurrentMonthProgressUseCase } from '@/domain/finances/application/use-cases/get-current-month-progress'
 import { HealthController } from './controllers/server/health.controller'
+import { AllExceptionsFilter } from './filters/all-exceptions.filter'
 
 @Module({
     imports: [
@@ -102,7 +104,11 @@ import { HealthController } from './controllers/server/health.controller'
         GetRollingYearProgressUseCase,
         FinancialAnalyticsService,
         GetWalletInfoUseCase,
-        GetGetCurrentMonthProgressUseCase
+        GetGetCurrentMonthProgressUseCase,
+        {
+            provide: APP_FILTER,
+            useClass: AllExceptionsFilter,
+        }
     ]
 })
 export class HttpModule { }

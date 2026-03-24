@@ -9,9 +9,9 @@ import { DateInterval } from '@/core/types/repositories/date-interval';
 import { TransactionPresenter } from '../../presenters/transaction-presenter';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { InvalidPeriodError } from '@/domain/finances/application/use-cases/errors/invalid-period-error';
-import { ListTransactionsResponseDTO } from './dto/response/list-transactions-response.dtp';
+import { ListTransactionsResponseDTO } from './dto/responses/list-transactions-response.dto';
 import { ErrorResponseDto } from '../../errors/api-error-response';
-import { ListTransactionsQueryDTO } from './dto/response/list-transactions-query.dto';
+import { ListTransactionsQueryDTO } from './dto/responses/list-transactions-query.dto';
 
 const listQuerySchema = z.object({
     categoryId: z.string().uuid().optional(),
@@ -22,7 +22,6 @@ const listQuerySchema = z.object({
 })
 
 type ListQueryDTO = z.infer<typeof listQuerySchema>
-
 
 
 @Controller('/api')

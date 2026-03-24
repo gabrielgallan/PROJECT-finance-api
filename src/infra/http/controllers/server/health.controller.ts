@@ -24,4 +24,9 @@ export class HealthController {
             timestamp: new Date().toISOString()
         }
     }
+
+    @Get('/health/error')
+    async throwUnhandledError() {
+        throw new Error('Unhandled error')
+    }
 }

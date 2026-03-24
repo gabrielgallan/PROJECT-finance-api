@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadGatewayException, Injectable } from '@nestjs/common'
 import { EmailSender } from '@/domain/identity/application/email/email-sender'
 import { EnvService } from '@/infra/env/env.service'
 import { Resend } from 'resend'
@@ -26,7 +26,9 @@ export class ResendEmailSenderService implements EmailSender {
         })
 
         if (error) {
-            console.error(error)
+            throw new BadGatewayException({
+                message: `Failed to send E-mail with Resend. ${error.message}`
+            })
         }
     }
 }

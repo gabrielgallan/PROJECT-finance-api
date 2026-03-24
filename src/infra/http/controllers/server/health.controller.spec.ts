@@ -25,6 +25,19 @@ describe('Get server health tests', () => {
             })
     })
 
+    it('[GET] /api/health should return 500 for unhandled errors', async () => {
+        await request(app.getHttpServer())
+            .get('/api/health/error')
+            .expect(500)
+            .expect((res) => {
+                expect(res.body).toEqual({
+                    statusCode: 500,
+                    message: 'Internal server error',
+                    error: 'InternalServerError',
+                })
+            })
+    })
+
     afterAll(async () => {
         await app.close()
     })
