@@ -10,14 +10,17 @@ import type { UserPayload } from '@/infra/auth/jwt.strategy';
 import { WalletSummaryPresenter } from '../../presenters/wallet-summary-presenter';
 import { GetWalletSummariesByCategoriesUseCase } from '@/domain/finances/application/use-cases/get-wallet-summaries-by-categories';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ErrorResponseDto } from '../../errors/api-error-response';
+import { GetWalletSummariesByCategoriesQueryDTO } from './dto/responses/get-wallet-summaries-by-categories-query.dto';
+import { GetWalletSummariesByCategoriesResponseDTO } from './dto/responses/get-wallet-summaries-by-categories-response.dto';
 
 const querySchema = z.object({
     start: z.coerce.date(),
     end: z.coerce.date()
 })
 
-type GetSummariesByCategoriesQueryDTO = z.infer<typeof querySchema>
+type GetSummariesByCategoriesQuerySchemaDTO = z.infer<typeof querySchema>
 
 @Controller('/api')
 @ApiTags('Summaries')
@@ -28,11 +31,13 @@ export class GetSummariesByCategoriesController {
 
     @Get('/wallet/categories/summary')
     @ApiOperation({ summary: 'get wallet summaries grouped by categories for a given period' })
-    @ApiOkResponse({ description: 'Wallet summaries retrieved successfully' })
-    @ApiNotFoundResponse({ description: 'User not found error' })
+    @ApiQuery({ type: GetWalletSummariesByCategoriesQueryDTO })
+    @ApiOkResponse({ description: 'Wallet summaries retrieved successfully', type: GetWalletSummariesByCategoriesResponseDTO })
+    @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
+    @ApiBadRequestResponse({ description: 'Invalid query params', type: ErrorResponseDto })
     async handle(
         @CurrentUser() user: UserPayload,
-        @Query(new ZodValidationPipe(querySchema)) query: GetSummariesByCategoriesQueryDTO
+        @Query(new ZodValidationPipe(querySchema)) query: GetSummariesByCategoriesQuerySchemaDTO
     ) {
         const { start, end } = query
 

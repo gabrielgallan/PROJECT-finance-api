@@ -7,8 +7,11 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import z from 'zod';
 import { DateInterval } from '@/core/types/repositories/date-interval';
 import { TransactionPresenter } from '../../presenters/transaction-presenter';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { InvalidPeriodError } from '@/domain/finances/application/use-cases/errors/invalid-period-error';
+import { ListTransactionsResponseDTO } from './dto/responses/list-transactions-response.dto';
+import { ErrorResponseDto } from '../../errors/api-error-response';
+import { ListTransactionsQueryDTO } from './dto/responses/list-transactions-query.dto';
 
 const listQuerySchema = z.object({
     categoryId: z.string().uuid().optional(),
@@ -20,6 +23,7 @@ const listQuerySchema = z.object({
 
 type ListQueryDTO = z.infer<typeof listQuerySchema>
 
+
 @Controller('/api')
 @ApiTags('Transactions')
 export class ListWalletTransactionsController {
@@ -29,9 +33,10 @@ export class ListWalletTransactionsController {
 
     @Get('/wallet/transactions')
     @ApiOperation({ summary: 'list wallet transactions with pagination and optional filters' })
-    @ApiOkResponse({ description: 'Transactions listed successfully' })
-    @ApiNotFoundResponse({ description: 'User not found error' })
-    @ApiBadRequestResponse({ description: 'Invalid period error' })
+    @ApiQuery({ type: ListTransactionsQueryDTO })
+    @ApiOkResponse({ description: 'Transactions listed successfully', type: ListTransactionsResponseDTO })
+    @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
+    @ApiBadRequestResponse({ description: 'Invalid period error', type: ErrorResponseDto })
     async handle(
         @CurrentUser() user: UserPayload,
         @Query(new ZodValidationPipe(listQuerySchema)) query: ListQueryDTO

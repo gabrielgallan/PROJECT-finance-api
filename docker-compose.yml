@@ -1,16 +1,16 @@
 services:
   postgres:
-    container_name: smart-finance-pg
+    container_name: valora-pg
     image: bitnami/postgresql
     ports:
       - 5432:5432
     environment:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=smart_finance
+      - POSTGRESQL_DATABASE=valora
 
   redis:
-    container_name: smart-finance-redis
+    container_name: valora-redis
     image: redis
     ports:
       - 6379:6379

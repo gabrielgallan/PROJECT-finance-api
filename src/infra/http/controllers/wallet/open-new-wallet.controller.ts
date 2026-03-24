@@ -9,6 +9,7 @@ import { MemberAlreadyHasWalletError } from '@/domain/finances/application/use-c
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 const openWalletBodySchema = z.object({
   balance: z.coerce.number().optional()
@@ -26,9 +27,9 @@ export class OpenWalletController {
   @Post('/wallets')
   @ApiOperation({ summary: 'Open a new wallet' })
   @ApiCreatedResponse({ description: 'Wallet opened successfully' })
-  @ApiNotFoundResponse({ description: 'User not found error' })
-  @ApiConflictResponse({ description: 'Member already has a wallet error' })
-  @ApiBadRequestResponse({ description: 'Invalid balance error' })
+  @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
+  @ApiConflictResponse({ description: 'Member already has a wallet error', type: ErrorResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid balance error', type: ErrorResponseDto })
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(openWalletBodySchema)) body: OpenWalletBodyDTO

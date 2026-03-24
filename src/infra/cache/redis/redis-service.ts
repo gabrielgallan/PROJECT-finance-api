@@ -11,7 +11,7 @@ export class RedisService extends Redis implements OnModuleDestroy {
     });
 
     this.on("error", (err) => {
-      console.error("Redis error:", err);
+      console.error(err)
     });
   }
 

@@ -9,7 +9,7 @@ import { Injectable } from '@nestjs/common'
 
 interface EditWalletCategoryUseCaseRequest {
   memberId: string
-  slug: string
+  categoryId: string
   name?: string
   description?: string
 }
@@ -31,7 +31,7 @@ export class EditWalletCategoryUseCase {
 
   async execute({
     memberId,
-    slug,
+    categoryId,
     name,
     description,
   }: EditWalletCategoryUseCaseRequest): Promise<EditWalletCategoryUseCaseResponse> {
@@ -41,9 +41,9 @@ export class EditWalletCategoryUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    const category = await this.categoriesRepository.findByWalletIdAndSlug(
+    const category = await this.categoriesRepository.findByIdAndWalletId(
+      categoryId,
       wallet.id.toString(),
-      slug,
     )
 
     if (!category) {

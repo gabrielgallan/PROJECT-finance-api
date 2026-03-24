@@ -1,12 +1,12 @@
+import './monitoring/monitoring.bootstrap'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from '@/infra/app.module'
 import { EnvService } from './env/env.service'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-// import * as fs from 'node:fs'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: false
+    logger: ['error', 'warn', 'log']
   })
 
   const config = new DocumentBuilder()
@@ -35,4 +35,4 @@ async function bootstrap() {
     })
 }
 
-bootstrap()
+void bootstrap()

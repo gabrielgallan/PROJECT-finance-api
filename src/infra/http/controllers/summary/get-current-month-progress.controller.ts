@@ -6,6 +6,8 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { CacheRepository } from '@/infra/cache/cache-repository';
 import { GetGetCurrentMonthProgressUseCase } from '@/domain/finances/application/use-cases/get-current-month-progress';
 import { MonthProgressPresenter } from '../../presenters/month-progress-presenter';
+import { ErrorResponseDto } from '../../errors/api-error-response';
+import { GetCurrentMonthProgressResponseDTO } from './dto/responses/get-current-month-progress-response.dto';
 
 @Controller('/api')
 @ApiTags('Summaries')
@@ -17,8 +19,8 @@ export class GetCurrentMonthProgressController {
 
     @Get('/wallet/summary/month')
     @ApiOperation({ summary: 'get current month progress' })
-    @ApiOkResponse({ description: 'Current month progress retrieved successfully' })
-    @ApiNotFoundResponse({ description: 'User not found error' })
+    @ApiOkResponse({ description: 'Current month progress retrieved successfully', type: GetCurrentMonthProgressResponseDTO })
+    @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
     async handle(
         @CurrentUser() user: UserPayload,
     ) {

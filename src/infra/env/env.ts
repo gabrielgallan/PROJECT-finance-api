@@ -15,6 +15,7 @@ export const envSchema = z.object({
     CLOUDINARY_API_KEY: z.string(),
     CLOUDINARY_API_SECRET: z.string(),
     FRONTEND_BASE_URL: z.url(),
+    SENTRY_DSN: z.string().url().optional(),
     REDIS_URL: z.url().optional().default('redis://127.0.0.1:6379/0'),
 })
 

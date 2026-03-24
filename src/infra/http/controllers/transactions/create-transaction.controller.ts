@@ -10,6 +10,7 @@ import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation
 import { createZodDto } from 'nestjs-zod';
 import { CacheRepository } from '@/infra/cache/cache-repository';
 import { InvalidPositiveNumberError } from '@/core/errors/invalid-positive-number-error';
+import { ErrorResponseDto } from '../../errors/api-error-response';
 
 const createTransactionBodySchema = z.object({
     categoryId: z.string().uuid().optional(),
@@ -33,8 +34,8 @@ export class CreateTransactionController {
     @Post('/wallet/transactions')
     @ApiOperation({ summary: 'create a new transaction' })
     @ApiOkResponse({ description: 'Transaction created successfully' })
-    @ApiNotFoundResponse({ description: 'User not found error' })
-    @ApiBadRequestResponse({ description: 'Invalid transaction data' })
+    @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
+    @ApiBadRequestResponse({ description: 'Invalid transaction data', type: ErrorResponseDto })
     async handle(
         @CurrentUser() user: UserPayload,
         @Body(new ZodValidationPipe(createTransactionBodySchema)) body: CreateTransactionBodyDTO

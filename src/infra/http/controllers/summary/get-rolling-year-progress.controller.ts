@@ -6,6 +6,8 @@ import { YearProgressPresenter } from '../../presenters/year-progress-presenter'
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { CacheRepository } from '@/infra/cache/cache-repository';
+import { ErrorResponseDto } from '../../errors/api-error-response';
+import { GetRollingYearProgressResponseDTO } from './dto/responses/get-rolling-year-progress-response.dto';
 
 @Controller('/api')
 @ApiTags('Summaries')
@@ -17,8 +19,8 @@ export class GetRollingYearProgressController {
 
     @Get('/wallet/summary/year')
     @ApiOperation({ summary: 'get rolling year progress' })
-    @ApiOkResponse({ description: 'Rolling year progress retrieved successfully' })
-    @ApiNotFoundResponse({ description: 'User not found error' })
+    @ApiOkResponse({ description: 'Rolling year progress retrieved successfully', type: GetRollingYearProgressResponseDTO })
+    @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
     async handle(
         @CurrentUser() user: UserPayload,
     ) {
