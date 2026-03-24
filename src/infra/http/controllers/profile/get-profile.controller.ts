@@ -7,14 +7,15 @@ import { UserPresenter } from '../../presenters/user-presenter'
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
+import { ErrorResponseDto } from '../../errors/api-error-response'
 
 class GetProfileResponseDTO extends createZodDto(z.object({
-    user: z.object({
-        id: z.string(),
-        name: z.string(),
-        email: z.string()
-    })
-})) {}
+  user: z.object({
+    name: z.string(),
+    email: z.string(),
+    avatarUrl: z.string().nullable()
+  })
+})) { }
 
 @Controller('/api')
 @ApiTags('Profile')
@@ -26,7 +27,7 @@ export class GetProfileController {
   @Get('/profile')
   @ApiOperation({ summary: 'get user profile' })
   @ApiOkResponse({ description: 'User profile retrieved successfully', type: GetProfileResponseDTO })
-  @ApiNotFoundResponse({ description: 'User not found error' })
+  @ApiNotFoundResponse({ description: 'User not found error', type: ErrorResponseDto })
   async handle(
     @CurrentUser() user: UserPayload
   ) {

@@ -44,8 +44,11 @@ describe('Get member wallet info tests', () => {
             .expect(200)
 
         expect(response.body).toMatchObject({
-            balance: 0,
-            createdAt: expect.any(String)
+            wallet: {
+                balance: 0,
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String)
+            }
         })
     })
 

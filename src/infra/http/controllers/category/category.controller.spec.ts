@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Encrypter } from '@/domain/identity/application/cryptography/encrypter'
+import { UUIDGenerator } from 'test/e2e/factories/uuid-generator'
 
 describe('Categories tests', () => {
     let app: INestApplication
@@ -83,7 +84,9 @@ describe('Categories tests', () => {
         expect(response.body.categories).toHaveLength(2)
     })
 
-    it('[PUT] /api/wallet/categories/:slug', async () => {
+    it('[PUT] /api/wallet/categories/:id', async () => {
+        const [uuid] = UUIDGenerator(1)
+
         const wallet = await prisma.wallet.create({
             data: {
                 holder: {
@@ -95,6 +98,7 @@ describe('Categories tests', () => {
                     createMany: {
                         data: [
                             {
+                                id: uuid,
                                 name: 'Uber',
                                 slug: 'uber'
                             }
@@ -107,7 +111,7 @@ describe('Categories tests', () => {
         const token = await encrypter.encrypt({ sub: wallet.holderId })
 
         await request(app.getHttpServer())
-            .put('/api/wallet/categories/uber')
+            .put(`/api/wallet/categories/${uuid}`)
             .set('Authorization', `Bearer ${token}`)
             .send({
                 name: 'Transport'
