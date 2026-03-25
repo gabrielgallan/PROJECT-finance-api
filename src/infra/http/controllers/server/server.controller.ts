@@ -9,10 +9,10 @@ class HealthResponseDTO extends createZodDto(z.object({
     timestamp: z.string()
 })) { }
 
-@Controller('/api')
+@Controller()
 @Public()
-@ApiTags('Server Connection')
-export class HealthController {
+@ApiTags('Server Actions')
+export class ServerController {
     constructor() { }
 
     @Get('/health')
@@ -26,6 +26,7 @@ export class HealthController {
     }
 
     @Get('/debug')
+    @ApiOperation({ summary: 'trigger a debug error' })
     async debug() {
         throw new Error('Unhandled error')
     }
