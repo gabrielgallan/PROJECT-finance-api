@@ -2,7 +2,7 @@
   "engines": {
     "node": "24"
   },
-  "name": "smart-finance-api",
+  "name": "valora-api",
   "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",

@@ -9,24 +9,25 @@ class HealthResponseDTO extends createZodDto(z.object({
     timestamp: z.string()
 })) { }
 
-@Controller('/api')
+@Controller()
 @Public()
-@ApiTags('Server Connection')
-export class HealthController {
+@ApiTags('Server Actions')
+export class ServerController {
     constructor() { }
 
     @Get('/health')
     @ApiOperation({ summary: 'get health status' })
     @ApiOkResponse({ description: 'Health status retrieved successfully', type: HealthResponseDTO })
-    async handle() {
+    async health() {
         return {
             ok: true,
             timestamp: new Date().toISOString()
         }
     }
 
-    @Get('/health/error')
-    async throwUnhandledError() {
+    @Get('/debug')
+    @ApiOperation({ summary: 'trigger a debug error' })
+    async debug() {
         throw new Error('Unhandled error')
     }
 }

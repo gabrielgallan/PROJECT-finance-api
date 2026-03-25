@@ -1,11 +1,9 @@
-import * as Sentry from '@sentry/nestjs'
+import * as Sentry from "@sentry/nestjs"
+import 'dotenv/config'
 
-const dsn = process.env.SENTRY_DSN
-
-if (dsn) {
-    Sentry.init({
-        dsn,
-        enableLogs: true,
-        sendDefaultPii: true,
-    })
-}
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  enableLogs: true,
+  tracesSampleRate: 1.0,
+  sendDefaultPii: true,
+});

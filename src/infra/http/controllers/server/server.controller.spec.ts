@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 
-describe('Get server health tests', () => {
+describe('Server actions tests', () => {
     let app: INestApplication
 
     beforeAll(async () => {
@@ -15,9 +15,9 @@ describe('Get server health tests', () => {
         await app.init()
     })
 
-    it('[GET] /api/health', async () => {
+    it('[GET] /health', async () => {
         await request(app.getHttpServer())
-            .get('/api/health')
+            .get('/health')
             .expect(200)
             .expect((res) => {
                 expect(res.body).toHaveProperty('ok', true)
@@ -25,9 +25,9 @@ describe('Get server health tests', () => {
             })
     })
 
-    it('[GET] /api/health should return 500 for unhandled errors', async () => {
+    it('[GET] /debug should return 500 for unhandled errors', async () => {
         await request(app.getHttpServer())
-            .get('/api/health/error')
+            .get('/debug')
             .expect(500)
             .expect((res) => {
                 expect(res.body).toEqual({
