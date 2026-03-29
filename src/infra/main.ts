@@ -4,10 +4,11 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from '@/infra/app.module'
 import { EnvService } from './env/env.service'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { Logger } from "@nestjs/common"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['log']
+    logger: ['warn', 'error', 'log']
   })
 
   const config = new DocumentBuilder()
@@ -17,6 +18,8 @@ async function bootstrap() {
     .addBearerAuth()
     .build()
 
+
+  const logger = new Logger()
   const document = SwaggerModule.createDocument(app, config)
 
   SwaggerModule.setup('docs', app, document)
@@ -29,12 +32,12 @@ async function bootstrap() {
 
   app.listen(port)
     .catch((err) => {
-      console.error("Error running HTTP server", { error: err });
+      logger.error("Error running HTTP server", { error: err });
 
       process.exit(1)
     })
     .finally(() => {
-      console.info(`Server HTTP running on port ${port}`);
+      logger.log(`Server HTTP running on port ${port}`);
     })
 }
 
