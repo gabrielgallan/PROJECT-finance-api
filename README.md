@@ -83,6 +83,23 @@ pnpm prisma migrate dev --name <name>
 pnpm start:dev
 ```
 
+# Running with Docker
+
+1. Copy docker env template
+```bash
+cp .env.docker.example .env
+```
+
+2. Start all containers (API + PostgreSQL + Redis)
+```bash
+docker compose up --build -d
+```
+
+3. Check API health
+```bash
+curl http://localhost:8001/health
+```
+
 # Documentations
 
 The API is currently documented with Swagger, and can be accessed by the route `/docs`

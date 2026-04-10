@@ -8,9 +8,48 @@ services:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
       - POSTGRESQL_DATABASE=valora
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docker -d valora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/bitnami/postgresql
 
   redis:
     container_name: valora-redis
     image: redis
     ports:
       - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+
+  api:
+    container_name: valora-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - 8001:8001
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=8001
+      - DATABASE_URL=postgresql://docker:docker@postgres:5432/valora?schema=public
+      - REDIS_URL=redis://redis:6379/0
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
