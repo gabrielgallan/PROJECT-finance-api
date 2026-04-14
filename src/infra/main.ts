@@ -32,7 +32,7 @@ async function bootstrap() {
 
   app.listen(port)
     .catch((err) => {
-      logger.error("Error running HTTP server", { error: err });
+      logger.error("Error running HTTP server", err);
 
       process.exit(1)
     })

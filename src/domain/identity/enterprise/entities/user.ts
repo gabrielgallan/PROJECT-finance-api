@@ -3,17 +3,17 @@ import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Optional } from "@/core/types/optional";
 
 export interface UserProps {
-  name?: string | null
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  createdAt: Date
-  updatedAt?: Date | null
+  name?: string | null;
+  email: string;
+  passwordHash?: string | null;
+  avatarUrl?: string | null;
+  createdAt: Date;
+  updatedAt?: Date | null;
 }
 
 export class User extends Entity<UserProps> {
   static create(
-    props: Optional<UserProps, 'createdAt' | 'updatedAt'>,
+    props: Optional<UserProps, "createdAt" | "updatedAt">,
     id?: UniqueEntityID,
   ) {
     const user = new User(
@@ -23,46 +23,51 @@ export class User extends Entity<UserProps> {
         updatedAt: props.updatedAt ?? null,
       },
       id,
-    )
+    );
 
-    return user
+    return user;
   }
 
   get name() {
-    return this.props.name
+    return this.props.name;
   }
 
   get email() {
-    return this.props.email
+    return this.props.email;
   }
 
   get passwordHash() {
-    return this.props.passwordHash
+    return this.props.passwordHash;
   }
 
   get avatarUrl() {
-    return this.props.avatarUrl
+    return this.props.avatarUrl;
   }
 
   get createdAt() {
-    return this.props.createdAt
+    return this.props.createdAt;
   }
 
   get updatedAt() {
-    return this.props.updatedAt
+    return this.props.updatedAt;
+  }
+
+  set name(name: string | null | undefined) {
+    this.props.name = name;
+    this.touch();
   }
 
   set avatarUrl(url: string | null | undefined) {
-    this.props.avatarUrl = url
+    this.props.avatarUrl = url;
   }
 
   set passwordHash(passwordHash: string | null | undefined) {
-    this.props.passwordHash = passwordHash
+    this.props.passwordHash = passwordHash;
 
-    this.touch()
+    this.touch();
   }
 
   touch() {
-    this.props.updatedAt = new Date()
+    this.props.updatedAt = new Date();
   }
 }
