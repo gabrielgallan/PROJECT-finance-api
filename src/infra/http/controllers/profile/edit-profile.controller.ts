@@ -19,7 +19,7 @@ import {
 import { createZodDto } from "nestjs-zod";
 import z from "zod";
 import { ErrorResponseDto } from "../../errors/api-error-response";
-import { ZodValidationPipe } from "node_modules/nestjs-zod/dist/index.mjs";
+import { ZodValidationPipe } from "../../pipes/zod-validation-pipe";
 
 const editProfileBodySchema = z.object({
   name: z.string().optional(),
