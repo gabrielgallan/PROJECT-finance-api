@@ -20,8 +20,8 @@ let sut: GetWalletSummariesByCategoriesUseCase
 describe('Get wallet summaries by categories use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(categoriesRepository)
     financialAnalyticsService = new FinancialAnalyticsService()
 
     sut = new GetWalletSummariesByCategoriesUseCase(

@@ -3,6 +3,7 @@ import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
 import { PrismaTransactionMapper } from "../mappers/prisma-transactions-mapper";
+import { PrismaTransactionWithCategoryMapper } from "../mappers/prisma-transactions-with-category-mapper";
 
 
 @Injectable()
@@ -46,6 +47,20 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
                     lte: interval.endDate
                 }
             },
+            select: {
+                id: true,
+                title: true,
+                amount: true,
+                operation: true,
+                method: true,
+                category: {
+                    select: {
+                        name: true,
+                        slug: true
+                    }
+                },
+                createdAt: true
+            },
             orderBy: {
                 createdAt: 'desc'
             },
@@ -54,7 +69,7 @@ export class PrismaTransactionsRepository implements TransactionsRepository {
         })
 
         // eslint-disable-next-line
-        return transactions.map(PrismaTransactionMapper.toDomain)
+        return transactions.map(PrismaTransactionWithCategoryMapper.toDomain)
     }
 
     async findManyByQuery({

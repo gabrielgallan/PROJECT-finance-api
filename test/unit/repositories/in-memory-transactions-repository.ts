@@ -1,8 +1,12 @@
 import { TransactionsRepository, PaginatedTransactionsQuery, TransactionsQuery } from "@/domain/finances/application/repositories/transactions-repository";
 import { Transaction } from "@/domain/finances/enterprise/entities/transaction";
+import { TransactionWithCategory } from "@/domain/finances/enterprise/entities/value-objects/transaction-with-category";
+import { InMemoryCategoriesRepository } from "./in-memory-category-repository";
 
 export class InMemoryTransactionsRepository implements TransactionsRepository {
     public items: Transaction[] = []
+
+    constructor(private categoriesRepository: InMemoryCategoriesRepository) { }
 
     async create(Transaction: Transaction) {
         this.items.push(Transaction)
@@ -20,20 +24,48 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
         walletId,
         categoryId,
         interval,
-        pagination
+        pagination,
     }: PaginatedTransactionsQuery) {
         const { page, limit } = pagination
         const { startDate, endDate } = interval
 
         const transactions = this.items.filter(t => {
-            return t.walletId.toString() === walletId &&
+            return (
+                t.walletId.toString() === walletId &&
                 t.createdAt.getTime() >= startDate.getTime() &&
                 t.createdAt.getTime() <= endDate.getTime()
+            )
         })
 
-        const transactionsWithCategory = categoryId ?
-            transactions.filter(t => t.categoryId?.toString() === categoryId)
+        const transactionsFromCategory = categoryId
+            ? transactions.filter(t => t.categoryId?.toString() === categoryId)
             : transactions
+
+        const transactionsWithCategory = await Promise.all(
+            transactionsFromCategory.map(async (t) => {
+                const category = t.categoryId
+                    ? await this.categoriesRepository.findByIdAndWalletId(
+                        t.categoryId.toString(),
+                        t.walletId.toString(),
+                    )
+                    : null
+
+                return TransactionWithCategory.create({
+                    transactionId: t.id.toString(),
+                    title: t.title,
+                    amount: t.amount,
+                    operation: t.operation,
+                    method: t.method,
+                    category: category
+                        ? {
+                            name: category.name,
+                            slug: category.slug.value,
+                        }
+                        : null,
+                    createdAt: t.createdAt,
+                })
+            }),
+        )
 
         const paginated = transactionsWithCategory
             .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())

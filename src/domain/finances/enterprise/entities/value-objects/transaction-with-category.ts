@@ -28,7 +28,7 @@ export class TransactionWithCategory extends ValueObject<TransactionWithCategory
     )
   }
 
-  get id(){
+  get id() {
     return this.props.transactionId
   }
 

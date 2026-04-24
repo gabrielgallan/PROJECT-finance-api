@@ -84,23 +84,25 @@ export class ListWalletTransactionsUseCase {
       pagination
     })
 
-    const details = transactions.map(transaction => {
-      return TransactionWithCategory.create({
-        transactionId: transaction.id.toString(),
-        title: transaction.title,
-        amount: transaction.amount,
-        operation: transaction.operation,
-        method: transaction.method,
-        category: category ? {
-          name: category.name,
-          slug: category.slug.value
-        } : null,
-        createdAt: transaction.createdAt
-      })
-    })
+    // const transactionsWithCategory = transactions.map(transaction => {
+    //   if (category) {
+    //     return TransactionWithCategory.create({
+    //       transactionId: transaction.id.toString(),
+    //       title: transaction.title,
+    //       amount: transaction.amount,
+    //       operation: transaction.operation,
+    //       method: transaction.method,
+    //       category: category ? {
+    //         name: category.name,
+    //         slug: category.slug.value
+    //       } : null,
+    //       createdAt: transaction.createdAt
+    //     })
+    //   }
+    // })
 
     return right({
-      transactions: details,
+      transactions,
       interval,
       pagination,
     })

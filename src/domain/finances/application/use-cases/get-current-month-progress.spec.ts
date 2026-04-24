@@ -7,6 +7,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { TransactionOperation } from '../../enterprise/entities/transaction'
 import { Cash } from '../../enterprise/entities/value-objects/cash'
 import { GetGetCurrentMonthProgressUseCase } from './get-current-month-progress'
+import { InMemoryCategoriesRepository } from 'test/unit/repositories/in-memory-category-repository'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: TransactionsRepository
@@ -16,7 +17,9 @@ let sut: GetGetCurrentMonthProgressUseCase
 describe('Get current month progress use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(
+      new InMemoryCategoriesRepository()
+    )
 
     sut = new GetGetCurrentMonthProgressUseCase(
       walletsRepository,
