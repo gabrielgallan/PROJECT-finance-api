@@ -17,7 +17,9 @@ describe('List wallet trasanctions by interval and category use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(
+      categoriesRepository
+    )
 
     sut = new ListWalletTransactionsUseCase(
       walletsRepository,

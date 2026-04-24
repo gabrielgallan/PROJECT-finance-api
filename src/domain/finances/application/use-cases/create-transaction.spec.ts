@@ -18,8 +18,8 @@ let sut: CreateTransactionUseCase
 describe('Create transaction use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(categoriesRepository)
 
     sut = new CreateTransactionUseCase(
       walletsRepository,

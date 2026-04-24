@@ -6,6 +6,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeTransaction } from 'test/unit/factories/make-transaction'
 import { TransactionOperation } from '@/domain/finances/enterprise/entities/transaction'
 import { Cash } from '../../enterprise/entities/value-objects/cash'
+import { InMemoryCategoriesRepository } from 'test/unit/repositories/in-memory-category-repository'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository
@@ -15,7 +16,9 @@ let sut: GetWalletSummaryUseCase
 describe('Get wallet summary by interval use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(
+      new InMemoryCategoriesRepository()
+    )
 
     sut = new GetWalletSummaryUseCase(
       walletsRepository,

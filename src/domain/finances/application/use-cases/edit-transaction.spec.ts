@@ -6,6 +6,7 @@ import { makeCategory } from 'test/unit/factories/make-category'
 import { EditTransactionUseCase } from './edit-transaction'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeTransaction } from 'test/unit/factories/make-transaction'
+import { Cash } from '../../enterprise/entities/value-objects/cash'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: InMemoryTransactionsRepository
@@ -16,8 +17,10 @@ let sut: EditTransactionUseCase
 describe('Edit transaction use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
     categoriesRepository = new InMemoryCategoriesRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(
+      categoriesRepository
+    )
 
     sut = new EditTransactionUseCase(
       walletsRepository,
@@ -51,7 +54,7 @@ describe('Edit transaction use case', () => {
         {
           walletId: new UniqueEntityID('wallet-1'),
           title: 'Netflix',
-          amount: 39.99,
+          amount: Cash.fromAmount(39.99),
         },
         new UniqueEntityID('transaction-1'),
       ),

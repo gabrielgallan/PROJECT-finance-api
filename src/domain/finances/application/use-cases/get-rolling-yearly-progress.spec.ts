@@ -7,6 +7,7 @@ import { makeTransaction } from 'test/unit/factories/make-transaction'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { TransactionOperation } from '../../enterprise/entities/transaction'
 import { Cash } from '../../enterprise/entities/value-objects/cash'
+import { InMemoryCategoriesRepository } from 'test/unit/repositories/in-memory-category-repository'
 
 let walletsRepository: InMemoryWalletsRepository
 let transactionsRepository: TransactionsRepository
@@ -16,7 +17,9 @@ let sut: GetRollingYearProgressUseCase
 describe('Get rolling yearly progress use case', () => {
   beforeEach(() => {
     walletsRepository = new InMemoryWalletsRepository()
-    transactionsRepository = new InMemoryTransactionsRepository()
+    transactionsRepository = new InMemoryTransactionsRepository(
+      new InMemoryCategoriesRepository()
+    )
 
     sut = new GetRollingYearProgressUseCase(
       walletsRepository,
