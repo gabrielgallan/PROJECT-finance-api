@@ -24,10 +24,4 @@ export class ServerController {
             timestamp: new Date().toISOString()
         }
     }
-
-    @Get('/debug')
-    @ApiOperation({ summary: 'trigger a debug error' })
-    async debug() {
-        throw new Error('Unhandled error')
-    }
 }
