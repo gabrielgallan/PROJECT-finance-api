@@ -3,8 +3,10 @@ import "./monitoring/monitoring.bootstrap"
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from '@/infra/app.module'
 import { EnvService } from './env/env.service'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { Logger } from "@nestjs/common"
+
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { apiReference } from '@scalar/nestjs-api-reference'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,11 +22,15 @@ async function bootstrap() {
 
 
   const logger = new Logger()
+
   const document = SwaggerModule.createDocument(app, config)
 
-  SwaggerModule.setup('docs', app, document)
-
-  // fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2))
+  app.use('/reference',
+      apiReference({
+        content: document,
+        theme: 'elysiajs'
+      })
+  )
 
   const envService = app.get(EnvService)
 
