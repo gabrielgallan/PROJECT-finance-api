@@ -103,3 +103,10 @@ curl http://localhost:8001/health
 # Documentations
 
 The API is currently documented with Swagger, and can be accessed by the route `/docs`
+
+# Preview
+
+<img width="900" height="569" alt="ps-1" src="https://github.com/user-attachments/assets/1db98cfd-ece8-4e25-913e-60ba4859ea82" />
+
+<img width="900" height="568" alt="ps-2" src="https://github.com/user-attachments/assets/c5639b99-8117-4fe1-8b57-bd2f34d00fb1" />
+
